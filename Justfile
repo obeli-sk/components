@@ -1,5 +1,16 @@
-build:
-    just run-all build
+build: build-activities build-webhooks
+
+build-activities:
+	set -xe && cargo build --target=wasm32-wasip2 --profile=release_activity \
+		$(cargo metadata --no-deps --format-version=1 \
+		| jq -r '.packages[].name | select(startswith("activity-")) | "-p \(. )"' \
+		| xargs)
+
+build-webhooks:
+	set -xe && cargo build --target=wasm32-wasip2 --profile=release_webhook \
+		$(cargo metadata --no-deps --format-version=1 \
+		| jq -r '.packages[].name | select(startswith("webhook-")) | "-p \(. )"' \
+		| xargs)
 
 verify-local:
 	just run-all verify-local
