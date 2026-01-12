@@ -1,8 +1,14 @@
 build:
 	cargo build --profile=release_activity
+
+serve:
+	obelisk server run --config obelisk-local.toml
+
 verify-local: build
 	obelisk server verify --ignore-missing-env-vars -c obelisk-local.toml
+
 verify-oci:
 	obelisk server verify --ignore-missing-env-vars -c obelisk-oci.toml
+
 push tag: build
 	(../../scripts/push-components.sh {{ tag }})

@@ -1,5 +1,5 @@
 package any:any;
 
 world any {
-    export obelisk-components:generic-http/http-get@0.1.0;
+    export obelisk-components:generic-http/http@0.1.0;
 }

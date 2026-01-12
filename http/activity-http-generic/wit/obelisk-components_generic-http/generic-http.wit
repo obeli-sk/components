@@ -1,0 +1,56 @@
+package obelisk-components:generic-http@0.1.0;
+
+interface http {
+    /// Supported HTTP Methods
+    enum method {
+        get,
+        post,
+        put,
+        delete,
+        patch,
+        head,
+        options,
+    }
+
+    /// List of key-value pairs for headers
+    type headers = list<tuple<string, string>>;
+
+    /// Input body: allows convenient string input or raw bytes
+    variant request-body {
+        text(string),
+        binary(list<u8>)
+    }
+
+    /// Output body: attempts to decode text, falls back to binary
+    variant response-body {
+        text(string),
+        binary(list<u8>)
+    }
+
+    /// The generic response structure
+    record response {
+        status-code: u16,
+        headers: headers,
+        body: response-body,
+    }
+
+    /// specific error categories
+    variant request-error {
+        /// Must be included for compatibility with Obelisk, indicates timeout or trap in last retry.
+        execution-failed,
+        /// The URL string provided was malformed
+        invalid-url(string),
+        /// Error building the request or sending it over the network
+        network-error(string),
+        /// Error reading the response body or other runtime issues
+        io-error(string),
+    }
+
+    /// A generic HTTP request function.
+    request: func(
+        method: method,
+        url: string,
+        headers: headers,
+        body: request-body,
+    ) -> result<response, request-error>;
+}
