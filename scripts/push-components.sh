@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Pushes all WASM components referred in current directory's obelisk-local.toml
-# to the Docker Hub and creates or updates `obelisk-oci.toml
+# to the Docker Hub and creates or updates obelisk-oci.toml
 # Expects that all components are already built.
 set -exuo pipefail
 

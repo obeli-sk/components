@@ -43,4 +43,4 @@ jobs:
 
       - name: Verify obelisk.toml
         run: |
-          nix develop --command just verify
+          nix develop --command just build verify
