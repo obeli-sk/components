@@ -24,7 +24,7 @@ like `FLY_API_TOKEN` must be present, check out [.envrc-example](./.envrc-exampl
 
 ### Start the Obelisk server
 ```sh
-just build-fly
+just build
 obelisk server run -c obelisk-local.toml
 ```
 

@@ -1,4 +1,3 @@
-# GitHub
 build:
 	cargo build --profile=release_activity
 verify-local: build

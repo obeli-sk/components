@@ -1,5 +1,5 @@
 build:
-	cargo build --profile=release_activity
+	cargo build --profile=release_webhook
 verify-local: build
 	obelisk server verify --ignore-missing-env-vars -c obelisk-local.toml
 verify-oci:

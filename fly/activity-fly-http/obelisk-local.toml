@@ -1,0 +1,11 @@
+api.listening_addr = "127.0.0.1:5005"
+webui.listening_addr = "127.0.0.1:8080"
+
+[[activity_wasm]]
+name = "activity_fly_http"
+location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_fly_http.wasm"
+max_retries = 0
+exec.lock_expiry.seconds = 15
+env_vars = ["FLY_API_TOKEN"]
+forward_stdout = "stderr"
+forward_stderr = "stderr"

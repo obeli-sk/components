@@ -1,0 +1,11 @@
+api.listening_addr = "127.0.0.1:5005"
+webui.listening_addr = "127.0.0.1:8080"
+
+[[activity_wasm]]
+name = "activity_fly_http"
+location.oci = "docker.io/getobelisk/components_fly_activity_fly_http:2026-01-10@sha256:4985d2a91d1edcb2312617be37ebb8a4599c886e714b47227c69dbd15c51b2f9"
+max_retries = 0
+exec.lock_expiry.seconds = 15
+env_vars = ["FLY_API_TOKEN"]
+forward_stdout = "stderr"
+forward_stderr = "stderr"
