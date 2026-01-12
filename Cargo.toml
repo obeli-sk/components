@@ -5,6 +5,7 @@ members = [
     "fly/activity-fly-http",
     "fly/webhook-fly-secrets-updater",
     "github/activity-github-graphql",
+    "http/activity-http-generic",
     "obelisk/activity-obelisk-client-http",
 ]
 

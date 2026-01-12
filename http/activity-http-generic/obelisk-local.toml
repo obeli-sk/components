@@ -1,0 +1,8 @@
+api.listening_addr = "127.0.0.1:5005"
+webui.listening_addr = "127.0.0.1:8080"
+
+[[activity_wasm]]
+name = "activity_http_generic"
+location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_http_generic.wasm"
+forward_stdout = "stderr"
+forward_stderr = "stderr"

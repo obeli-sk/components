@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Pushes all WASM components to the Docker Hub and updates obelisk-oci.toml
-
+# Pushes all WASM components referred in current directory's obelisk-local.toml
+# to the Docker Hub and creates or updates `obelisk-oci.toml
+# Expects that all components are already built.
 set -exuo pipefail
 
 OBELISK_TOML_DIR_VALUE="${PWD}"
@@ -24,8 +25,6 @@ push() {
     sed -i -E "/name = \"${FILE_NAME_WITHOUT_EXT}\"/{n;s|location\..*\"|location.oci = \"${OUTPUT}\"|}" "$TARGET_TOML_FILE"
 }
 
-# Build components
-just build
 cp "$SOURCE_TOML_FILE" "$TARGET_TOML_FILE"
 
 

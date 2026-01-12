@@ -49,6 +49,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "activity-http-generic"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "wit-bindgen 0.50.0",
+ "wit-bindgen-rust",
+ "wit-parser 0.244.0",
+ "wstd",
+]
+
+[[package]]
 name = "activity-obelisk-client-http"
 version = "0.1.0"
 dependencies = [
