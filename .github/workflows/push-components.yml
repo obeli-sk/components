@@ -51,7 +51,7 @@ jobs:
 
       - name: Run just push
         run: |
-          nix develop --command "just push $TAG
+          nix develop --command "just push $TAG"
         working-directory: ${{ github.event.inputs.directory }}
         env:
           TAG: ${{ github.event.inputs.tag }}
