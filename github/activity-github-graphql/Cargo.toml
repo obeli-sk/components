@@ -1,0 +1,26 @@
+[package]
+name = "activity-github-graphql"
+description = "Activity that queries GitHub using GraphQL."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+cynic.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+wit-bindgen.workspace = true
+wstd.workspace = true
+
+[build-dependencies]
+cynic-codegen.workspace = true
+anyhow.workspace = true
+wit-bindgen-rust.workspace = true
+wit-parser.workspace = true

@@ -1,0 +1,9 @@
+use flake .
+
+export GITHUB_TOKEN="..."
+
+export TEST_GITHUB_TOKEN="..."
+export TEST_GITHUB_LOGIN="..."
+export TEST_GITHUB_REPO="..."
+
+export WASMTIME_BACKTRACE_DETAILS=1
