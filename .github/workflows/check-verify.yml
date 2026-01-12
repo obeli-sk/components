@@ -41,6 +41,14 @@ jobs:
         run: |
           nix develop --command echo
 
-      - name: Verify obelisk.toml
+      - name: just build
         run: |
-          nix develop --command just build verify
+          nix develop --command just build
+
+      - name: just verify-local
+        run: |
+          nix develop --command just verify-local
+
+      - name: just verify-oci
+        run: |
+          nix develop --command just verify-oci
