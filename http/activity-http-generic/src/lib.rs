@@ -22,7 +22,7 @@ impl Guest for Component {
         method: http::Method,
         url: String,
         headers: http::Headers,
-        body: http::RequestBody,
+        body: Option<http::RequestBody>,
     ) -> Result<http::Response, http::RequestError> {
         block_on(async { handle_request(method, url, headers, body).await })
     }
@@ -32,7 +32,7 @@ async fn handle_request(
     method: WitMethod,
     url: String,
     headers: http::Headers,
-    body: RequestBody,
+    body: Option<RequestBody>,
 ) -> Result<http::Response, RequestError> {
     // 1. Map Method
     let req_method = match method {
@@ -45,10 +45,11 @@ async fn handle_request(
         WitMethod::Options => Method::OPTIONS,
     };
 
-    // 2. Extract Body Bytes from Variant
+    // 2. Extract Body Bytes (Handle Option)
     let body_bytes = match body {
-        RequestBody::Text(s) => s.into_bytes(),
-        RequestBody::Binary(b) => b,
+        Some(RequestBody::Text(s)) => s.into_bytes(),
+        Some(RequestBody::Binary(b)) => b,
+        None => Vec::new(),
     };
 
     // 3. Build Request
@@ -107,18 +108,21 @@ async fn handle_request(
             .map_err(|e| RequestError::IoError(e.to_string()))?,
     );
 
-    let body_variant = if is_text_content {
+    // If body is empty, return None
+    let body_option = if raw_bytes.is_empty() {
+        None
+    } else if is_text_content {
         match String::from_utf8(raw_bytes) {
-            Ok(text) => ResponseBody::Text(text),
-            Err(e) => ResponseBody::Binary(e.into_bytes()),
+            Ok(text) => Some(ResponseBody::Text(text)),
+            Err(e) => Some(ResponseBody::Binary(e.into_bytes())),
         }
     } else {
-        ResponseBody::Binary(raw_bytes)
+        Some(ResponseBody::Binary(raw_bytes))
     };
 
     Ok(http::Response {
         status_code,
         headers: res_headers,
-        body: body_variant,
+        body: body_option,
     })
 }

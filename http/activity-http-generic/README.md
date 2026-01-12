@@ -12,7 +12,7 @@ obelisk client execution submit --follow \
   '"get"' \
   '"https://httpbin.org/get"' \
   '[]' \
-  '[]'
+  null
 ```
 
 Issue a POST request:

@@ -31,7 +31,7 @@ interface http {
     record response {
         status-code: u16,
         headers: headers,
-        body: response-body,
+        body: option<response-body>,
     }
 
     /// specific error categories
@@ -51,6 +51,6 @@ interface http {
         method: method,
         url: string,
         headers: headers,
-        body: request-body,
+        body: option<request-body>,
     ) -> result<response, request-error>;
 }
