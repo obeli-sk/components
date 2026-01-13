@@ -6,7 +6,8 @@
 set -exuo pipefail
 
 OBELISK_TOML_DIR_VALUE="${PWD}"
-PREFIX="docker.io/getobelisk/components_${PWD##*/}_"
+PARENT=$(basename "$(dirname "$PWD")")
+PREFIX="docker.io/getobelisk/components_${PARENT}_"
 TAG="$1"
 
 SOURCE_TOML_FILE="obelisk-local.toml"
