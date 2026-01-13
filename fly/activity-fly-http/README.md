@@ -24,8 +24,7 @@ like `FLY_API_TOKEN` must be present, check out [.envrc-example](./.envrc-exampl
 
 ### Start the Obelisk server
 ```sh
-just build
-obelisk server run -c obelisk-local.toml
+just build serve
 ```
 
 
@@ -59,10 +58,16 @@ List IPs:
 obelisk client execution submit -f .../ips.list -- \
 \"$FLY_APP_NAME\"
 ```
-Allocate an IP:
+Allocate an IP. Note that the previous expected list of IPs must be passed, as the underlying API is not idempotent.
 ```sh
+
+OLD_IPS=$(obelisk client execution submit -f --json .../ips.list -- \
+\"$FLY_APP_NAME\" \
+| jq '.ok')
+
 IP=$(obelisk client execution submit -f --json .../ips.allocate -- \
-\"$FLY_APP_NAME\" '{ "ipv6": {"region": null} }' '[]' | jq -r '.[-1].ok' )
+\"$FLY_APP_NAME\" '{ "ipv6": {"region": null} }' "$OLD_IPS" \
+| jq -r '.ok' )
 ```
 Release an IP:
 ```sh
@@ -97,15 +102,16 @@ export VOLUME_ID=$(obelisk client execution submit -f --json .../volumes.create 
       "name": "my_app_vol",
       "region": "ams",
       "size-gb": 1
-    }' | jq -r '.[-1].ok.id')
+    }'\
+| jq -r '.ok.id')
 ```
 
 Delete the volume:
 ```sh
 obelisk client execution submit -f .../volumes.delete -- \
 \"$FLY_APP_NAME\" \"$VOLUME_ID\"
+unset VOLUME_ID
 ```
-
 #### VMs
 
 List VMs:
@@ -117,8 +123,8 @@ obelisk client execution submit -f .../machines.list -- \
 Launch a VM:
 ```sh
 MACHINE_ID=$(obelisk client execution submit -f --json .../machines.create -- \
-\"$FLY_APP_NAME\" \"$FLY_MACHINE_NAME\" "$(fly-http-machine-config.json.sh)" \"$FLY_REGION\" \
-| jq -r '.[-1].ok')
+\"$FLY_APP_NAME\" \"$FLY_MACHINE_NAME\" "$(./fly-http-machine-config.json.sh)" \"$FLY_REGION\" \
+| jq -r '.ok')
 ```
 
 Get the VM:
