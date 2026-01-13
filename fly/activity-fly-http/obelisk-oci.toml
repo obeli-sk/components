@@ -3,7 +3,7 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_fly_http"
-location.oci = "docker.io/getobelisk/components_activity-fly-http_activity_fly_http:2026-01-13@sha256:499b0221a79b29bc436d950e4f6544a957ff0e65d0f07ba90f169d2e0ae61d07"
+location.oci = "docker.io/getobelisk/components_fly_activity_fly_http:2026-01-13@sha256:7529010fffc625e2aa7ce21d421248b8e7df80daed790713ff63a992c7d632bb"
 exec.lock_expiry.seconds = 15
 env_vars = ["FLY_API_TOKEN"]
 forward_stdout = "stderr"
