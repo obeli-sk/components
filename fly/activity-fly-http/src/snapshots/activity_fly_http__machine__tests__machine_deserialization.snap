@@ -1,5 +1,5 @@
 ---
-source: activity/fly-http/impl/src/machine.rs
+source: fly/activity-fly-http/src/machine.rs
 expression: machine
 ---
 Machine {
@@ -42,6 +42,7 @@ Machine {
         stop-config: None,
         mounts: None,
         services: None,
+        files: None,
     },
     created-at: "2025-09-10T12:03:04Z",
     updated-at: "2025-09-10T12:03:07Z",
