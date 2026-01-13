@@ -103,6 +103,14 @@ interface machines {
         host-status: host-status,
     }
 
+    record file-config {
+        guest-path: string,
+        image-config: option<string>,
+        mode: option<u32>,
+        raw-value: option<string>,
+        secret-name: option<string>,
+    }
+
     record machine-config {
         image: string,
         guest: option<guest-config>,
@@ -114,6 +122,7 @@ interface machines {
         stop-config: option<stop-config>,
         mounts: option<list<mount>>,
         services: option<list<service-config>>,
+        files: option<list<file-config>>,
     }
 
     record mount {

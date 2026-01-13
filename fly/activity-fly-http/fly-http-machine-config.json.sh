@@ -27,6 +27,9 @@ cat <<EOF
         }
     ],
     "env": [ ["key", "val"], ["other", "otherval"] ],
+    "files": [
+        {"guest-path":"/etc/info.txt", "raw-value":"$(echo -n "hello" | base64)"}
+    ],
     "restart": {
         "policy": "no"
     }
@@ -41,3 +44,4 @@ cat <<EOF
     fi)
 }
 EOF
+
