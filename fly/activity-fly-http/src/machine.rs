@@ -1,5 +1,5 @@
 use crate::generated::exports::obelisk_flyio::activity_fly_http::machines::{
-    ExecResponse, Guest, Machine, MachineConfig,
+    ExecConfig, ExecResponse, Guest, Machine, MachineConfig,
 };
 use crate::generated::obelisk_flyio::activity_fly_http::regions::Region;
 use crate::machine::ser::MachineConfigSer;
@@ -10,6 +10,7 @@ use ser::{
     ExecResponseSer, MachineCreateRequestSer, MachineCreateResponseSer, MachineUpdateRequestSer,
     ResponseErrorSer,
 };
+use serde::Serialize;
 use wstd::http::{Body, Client, Method, StatusCode};
 use wstd::runtime::block_on;
 
@@ -241,11 +242,20 @@ async fn exec(
     app_name: AppName,
     machine_id: MachineId,
     command: Vec<String>,
+    config: ExecConfig,
 ) -> Result<ExecResponse, anyhow::Error> {
+    #[derive(Serialize)]
+    struct ExecPayload {
+        command: Vec<String>,
+        timeout: Option<u16>,
+        stdin: Option<String>,
+    }
     let url = format!("{API_BASE_URL}/apps/{app_name}/machines/{machine_id}/exec");
-    let body = serde_json::json!({
-        "command": command,
-    });
+    let body = ExecPayload {
+        command,
+        timeout: config.timeout_secs,
+        stdin: config.stdin,
+    };
     let request = request_with_api_token()?
         .method(Method::POST)
         .uri(url)
@@ -396,11 +406,12 @@ impl Guest for Component {
         app_name: String,
         machine_id: String,
         command: Vec<String>,
+        config: ExecConfig,
     ) -> Result<ExecResponse, String> {
         (|| {
             let app_name = AppName::new(app_name)?;
             let machine_id = MachineId::new(machine_id)?;
-            block_on(exec(app_name, machine_id, command))
+            block_on(exec(app_name, machine_id, command, config))
         })()
         .map_err(|err| err.to_string())
     }
@@ -409,12 +420,13 @@ impl Guest for Component {
         app_name: String,
         machine_id: String,
         command: Vec<String>,
+        config: ExecConfig,
     ) -> Result<ExecResponse, String> {
         (|| {
             let app_name = AppName::new(app_name)?;
             let machine_id = MachineId::new(machine_id)?;
             block_on(async {
-                let resp = exec(app_name, machine_id, command).await?;
+                let resp = exec(app_name, machine_id, command, config).await?;
                 if resp.exit_code == Some(0) {
                     Ok(resp)
                 } else {

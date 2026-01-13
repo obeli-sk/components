@@ -133,6 +133,14 @@ obelisk client execution submit -f .../machines.get -- \
 \"$FLY_APP_NAME\" \"$MACHINE_ID\"
 ```
 
+Exec:
+```sh
+obelisk client execution submit -f .../machines.exec -- \
+\"$FLY_APP_NAME\" \"$MACHINE_ID\" \
+'["ls", "-la"]' \
+'{ "timeout-secs": 1 }'
+```
+
 Delete the VM:
 ```sh
 obelisk client execution submit -f .../machines.delete -- \
