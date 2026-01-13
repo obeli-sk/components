@@ -26,9 +26,11 @@ cat <<EOF
             "protocol": "tcp"
         }
     ],
+    "env": [ ["key", "val"], ["other", "otherval"] ],
     "restart": {
         "policy": "no"
-    }$(if [ -n "$VOLUME_ID" ]; then
+    }
+    $(if [ -n "$VOLUME_ID" ]; then
         echo ',
     "mounts": [
         {

@@ -2,6 +2,7 @@ use crate::generated::exports::obelisk_flyio::activity_fly_http::machines::{
     ExecResponse, Guest, Machine, MachineConfig,
 };
 use crate::generated::obelisk_flyio::activity_fly_http::regions::Region;
+use crate::machine::ser::MachineConfigSer;
 use crate::wstd_util::JsonRequest as _;
 use crate::{API_BASE_URL, AppName, Component, MachineId, request_with_api_token};
 use anyhow::{Context, anyhow, bail, ensure};
@@ -13,22 +14,61 @@ use wstd::http::{Body, Client, Method, StatusCode};
 use wstd::runtime::block_on;
 
 pub(crate) mod ser {
+    use std::collections::HashMap;
+
     use crate::generated::exports::obelisk_flyio::activity_fly_http::machines::{
-        ExecResponse, MachineConfig,
+        ExecResponse, FileConfig, GuestConfig, InitConfig, MachineConfig, MachineRestart, Mount,
+        ServiceConfig, StopConfig,
     };
     use crate::generated::obelisk_flyio::activity_fly_http::regions::Region;
     use serde::{Deserialize, Serialize};
 
+    // Fix env var serialization.
+    // WIT: `option<list<tuple<string, string>>>`
+    // Expected `{"key1":"val1",...}`
+    // TODO: Remove when `map` type is implemented.
+    #[derive(Serialize, Debug)]
+    pub(crate) struct MachineConfigSer {
+        pub image: String,
+        pub guest: Option<GuestConfig>,
+        /// Destroy the VM after first exec
+        pub auto_destroy: Option<bool>,
+        pub init: Option<InitConfig>,
+        pub env: Option<HashMap<String, String>>,
+        pub restart: Option<MachineRestart>,
+        pub stop_config: Option<StopConfig>,
+        pub mounts: Option<Vec<Mount>>,
+        pub services: Option<Vec<ServiceConfig>>,
+        pub files: Option<Vec<FileConfig>>,
+    }
+
+    impl From<MachineConfig> for MachineConfigSer {
+        fn from(value: MachineConfig) -> Self {
+            MachineConfigSer {
+                image: value.image,
+                guest: value.guest,
+                auto_destroy: value.auto_destroy,
+                init: value.init,
+                env: value.env.map(HashMap::from_iter),
+                restart: value.restart,
+                stop_config: value.stop_config,
+                mounts: value.mounts,
+                services: value.services,
+                files: value.files,
+            }
+        }
+    }
+
     #[derive(Serialize, Debug)]
     pub(crate) struct MachineCreateRequestSer {
         pub(crate) name: String,
-        pub(crate) config: MachineConfig,
+        pub(crate) config: MachineConfigSer,
         pub(crate) region: Option<Region>,
     }
 
     #[derive(Serialize, Debug)]
     pub(crate) struct MachineUpdateRequestSer {
-        pub(crate) config: MachineConfig,
+        pub(crate) config: MachineConfigSer,
         pub(crate) region: Option<Region>,
     }
 
@@ -128,7 +168,7 @@ async fn create(
     {
         let request_payload = MachineCreateRequestSer {
             name: machine_name,
-            config: machine_config,
+            config: MachineConfigSer::from(machine_config),
             region,
         };
         let url = format!("{API_BASE_URL}/apps/{app_name}/machines");
@@ -169,7 +209,7 @@ async fn update(
 ) -> Result<(), anyhow::Error> {
     {
         let request_payload = MachineUpdateRequestSer {
-            config: machine_config,
+            config: MachineConfigSer::from(machine_config),
             region,
         };
         let url = format!("{API_BASE_URL}/apps/{app_name}/machines/{machine_id}");
