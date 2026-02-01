@@ -1,0 +1,452 @@
+package obelisk-components:openai-responses@0.1.0;
+
+/// OpenAI Responses API types and interface
+interface types {
+    /// Role of a message participant
+    enum role {
+        user,
+        assistant,
+        system,
+        developer,
+    }
+
+    /// Content types for input
+    variant input-content {
+        text(string),
+        image-url(image-url-content),
+        image-file(image-file-content),
+    }
+
+    record image-url-content {
+        url: string,
+        detail: option<image-detail>,
+    }
+
+    record image-file-content {
+        file-id: string,
+        detail: option<image-detail>,
+    }
+
+    enum image-detail {
+        low,
+        high,
+        auto,
+    }
+
+    /// Input message for the conversation
+    record input-message {
+        role: role,
+        content: list<input-content>,
+    }
+
+    /// Simple text-only input message
+    record simple-message {
+        role: role,
+        content: string,
+    }
+
+    /// Tool types
+    variant tool {
+        function(function-tool),
+        web-search(web-search-tool),
+        file-search(file-search-tool),
+        code-interpreter(code-interpreter-tool),
+        computer-use(computer-use-tool),
+    }
+
+    record function-tool {
+        name: string,
+        description: option<string>,
+        parameters: option<string>,  // JSON Schema as string
+        strict: option<bool>,
+    }
+
+    record web-search-tool {
+        search-context-size: option<search-context-size>,
+        user-location: option<user-location>,
+    }
+
+    enum search-context-size {
+        low,
+        medium,
+        high,
+    }
+
+    record user-location {
+        %type: string,
+        city: option<string>,
+        country: option<string>,
+        region: option<string>,
+        timezone: option<string>,
+    }
+
+    record file-search-tool {
+        vector-store-ids: list<string>,
+        max-num-results: option<u32>,
+        ranking-options: option<ranking-options>,
+    }
+
+    record ranking-options {
+        ranker: option<string>,
+        score-threshold: option<f32>,
+    }
+
+    record code-interpreter-tool {
+        container: option<string>,
+    }
+
+    record computer-use-tool {
+        environment: string,
+        display-width: u32,
+        display-height: u32,
+    }
+
+    /// Response format options
+    variant response-format {
+        text,
+        json-object,
+        json-schema(json-schema-format),
+    }
+
+    record json-schema-format {
+        name: string,
+        schema: string,  // JSON Schema as string
+        description: option<string>,
+        strict: option<bool>,
+    }
+
+    /// Tool choice options
+    variant tool-choice {
+        auto,
+        none,
+        required,
+        specific(specific-tool-choice),
+    }
+
+    record specific-tool-choice {
+        %type: string,
+        name: option<string>,
+    }
+
+    /// Truncation strategy
+    enum truncation {
+        auto,
+        disabled,
+    }
+
+    /// Reasoning effort level
+    enum reasoning-effort {
+        low,
+        medium,
+        high,
+    }
+
+    /// Reasoning configuration
+    record reasoning {
+        effort: reasoning-effort,
+        summary: option<reasoning-summary>,
+    }
+
+    enum reasoning-summary {
+        auto,
+        concise,
+        detailed,
+    }
+
+    /// Request to create a response
+    record create-response-request {
+        model: string,
+        input: list<input-message>,
+        instructions: option<string>,
+        max-output-tokens: option<u32>,
+        metadata: option<list<tuple<string, string>>>,
+        parallel-tool-calls: option<bool>,
+        previous-response-id: option<string>,
+        reasoning: option<reasoning>,
+        store: option<bool>,
+        temperature: option<f32>,
+        text: option<response-format>,
+        tool-choice: option<tool-choice>,
+        tools: option<list<tool>>,
+        top-p: option<f32>,
+        truncation: option<truncation>,
+        user: option<string>,
+    }
+
+    /// Simplified request with just text input
+    record simple-request {
+        model: string,
+        input: string,
+        instructions: option<string>,
+        max-output-tokens: option<u32>,
+        temperature: option<f32>,
+        tools: option<list<tool>>,
+    }
+
+    /// Output content item
+    variant output-content {
+        text(output-text),
+        refusal(string),
+    }
+
+    record output-text {
+        text: string,
+        annotations: list<annotation>,
+    }
+
+    variant annotation {
+        file-citation(file-citation),
+        url-citation(url-citation),
+        file-path(file-path),
+    }
+
+    record file-citation {
+        file-id: string,
+        index: u32,
+    }
+
+    record url-citation {
+        url: string,
+        title: string,
+        start-index: u32,
+        end-index: u32,
+    }
+
+    record file-path {
+        file-id: string,
+        index: u32,
+    }
+
+    /// Output item in a response
+    variant output-item {
+        message(output-message),
+        function-call(function-call-output),
+        function-call-output(function-call-result),
+        web-search-call(web-search-output),
+        file-search-call(file-search-output),
+        computer-call(computer-call-output),
+        reasoning(reasoning-output),
+    }
+
+    record output-message {
+        id: string,
+        role: role,
+        content: list<output-content>,
+        status: item-status,
+    }
+
+    enum item-status {
+        in-progress,
+        completed,
+        incomplete,
+    }
+
+    record function-call-output {
+        id: string,
+        call-id: string,
+        name: string,
+        arguments: string,
+        status: item-status,
+    }
+
+    record function-call-result {
+        id: string,
+        call-id: string,
+        output: string,
+    }
+
+    record web-search-output {
+        id: string,
+        status: item-status,
+    }
+
+    record file-search-output {
+        id: string,
+        queries: list<string>,
+        status: item-status,
+        results: option<list<file-search-result>>,
+    }
+
+    record file-search-result {
+        file-id: string,
+        filename: string,
+        score: f32,
+        text: string,
+    }
+
+    record computer-call-output {
+        id: string,
+        call-id: string,
+        action: string,  // JSON encoded action
+        status: item-status,
+        pending-safety-checks: list<safety-check>,
+    }
+
+    record safety-check {
+        id: string,
+        code: string,
+        message: string,
+    }
+
+    record reasoning-output {
+        id: string,
+        summary: list<reasoning-summary-item>,
+        status: item-status,
+    }
+
+    record reasoning-summary-item {
+        %type: string,
+        text: string,
+    }
+
+    /// Token usage information
+    record usage {
+        input-tokens: u32,
+        output-tokens: u32,
+        total-tokens: u32,
+        input-tokens-details: option<input-tokens-details>,
+        output-tokens-details: option<output-tokens-details>,
+    }
+
+    record input-tokens-details {
+        cached-tokens: u32,
+    }
+
+    record output-tokens-details {
+        reasoning-tokens: u32,
+    }
+
+    /// Response status
+    enum response-status {
+        in-progress,
+        completed,
+        incomplete,
+        failed,
+        cancelled,
+    }
+
+    /// Incomplete details
+    record incomplete-details {
+        reason: string,
+    }
+
+    /// Error information
+    record response-error {
+        code: string,
+        message: string,
+    }
+
+    /// The main response object
+    record response {
+        id: string,
+        object: string,
+        created-at: u64,
+        model: string,
+        output: list<output-item>,
+        status: response-status,
+        usage: option<usage>,
+        error: option<response-error>,
+        incomplete-details: option<incomplete-details>,
+        instructions: option<string>,
+        metadata: option<list<tuple<string, string>>>,
+        parallel-tool-calls: bool,
+        previous-response-id: option<string>,
+        temperature: option<f32>,
+        top-p: option<f32>,
+        truncation: option<truncation>,
+        user: option<string>,
+    }
+
+    /// API Error - includes execution-failed for Obelisk compatibility
+    variant api-error {
+        /// Must be included for Obelisk compatibility, indicates timeout or trap in last retry.
+        execution-failed,
+        /// Missing or invalid API key
+        configuration-error(string),
+        /// HTTP request failed (network, timeout, etc.)
+        request-failed(string),
+        /// OpenAI API returned an error
+        api-error(api-error-details),
+        /// Failed to parse response
+        parse-error(string),
+    }
+
+    /// Details of an OpenAI API error response
+    record api-error-details {
+        code: string,
+        message: string,
+        param: option<string>,
+        %type: string,
+    }
+
+    /// List responses result
+    record list-responses-result {
+        object: string,
+        data: list<response>,
+        has-more: bool,
+        first-id: option<string>,
+        last-id: option<string>,
+    }
+
+    /// List input items result  
+    record list-input-items-result {
+        object: string,
+        data: list<input-item>,
+        has-more: bool,
+        first-id: option<string>,
+        last-id: option<string>,
+    }
+
+    /// Input item (stored)
+    record input-item {
+        id: string,
+        %type: string,
+        content: option<string>,  // JSON encoded for flexibility
+    }
+}
+
+/// The Responses API interface
+interface api {
+    use types.{
+        create-response-request,
+        simple-request,
+        response,
+        api-error,
+        list-responses-result,
+        list-input-items-result,
+    };
+
+    /// Create a new response
+    create: func(request: create-response-request) -> result<response, api-error>;
+
+    /// Create a response with simple text input
+    create-simple: func(request: simple-request) -> result<response, api-error>;
+
+    /// Retrieve a response by ID
+    get: func(response-id: string) -> result<response, api-error>;
+
+    /// Delete a response by ID
+    delete: func(response-id: string) -> result<bool, api-error>;
+
+    /// List stored responses
+    list-responses: func(
+        limit: option<u32>,
+        order: option<string>,
+        after: option<string>,
+        before: option<string>,
+    ) -> result<list-responses-result, api-error>;
+
+    /// List input items for a response
+    list-input-items: func(
+        response-id: string,
+        limit: option<u32>,
+        order: option<string>,
+        after: option<string>,
+        before: option<string>,
+    ) -> result<list-input-items-result, api-error>;
+
+    /// Cancel an in-progress response
+    cancel: func(response-id: string) -> result<response, api-error>;
+}
+
+
