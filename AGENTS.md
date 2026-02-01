@@ -39,10 +39,22 @@ This provides all necessary tools: Rust toolchain, wasmtime, wasm-tools, etc.
 
 ### Without Nix
 
-If Nix is unavailable, ensure you have:
-- Rust toolchain matching `rust-toolchain.toml` (channel 1.92+)
-- `wasm32-wasip2` target: `rustup target add wasm32-wasip2`
-- wasmtime for running tests: `curl https://wasmtime.dev/install.sh -sSf | bash`
+If Nix is unavailable, install tools matching versions in `dev-deps.txt`:
+
+```bash
+# Check required versions
+cat dev-deps.txt
+
+# Install Rust toolchain per rust-toolchain.toml
+rustup default 1.92
+rustup target add wasm32-wasip2
+
+# Install wasmtime (check dev-deps.txt for version)
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+# Install obelisk CLI
+cargo install obelisk --version <version-from-dev-deps.txt>
+```
 
 ## Project Structure
 
@@ -55,6 +67,7 @@ Activities are WASIp2 components that perform side effects. Each activity lives 
 ├── .cargo/config.toml    # Build target and test runner config
 ├── Cargo.toml            # Uses workspace dependencies
 ├── README.md
+├── obelisk-local.toml    # Local Obelisk config (path to wasm)
 ├── src/
 │   └── lib.rs
 └── wit/
@@ -219,6 +232,35 @@ fn my_function() -> Result<String, ApiError> {
 - Run `cargo clippy --target wasm32-wasip2` and fix all warnings
 - Follow existing patterns in the repository
 
+## Obelisk Configuration
+
+### obelisk-local.toml
+
+Each activity should have an `obelisk-local.toml` for local development:
+
+```toml
+api.listening_addr = "127.0.0.1:5005"
+webui.listening_addr = "127.0.0.1:8080"
+
+[[activity_wasm]]
+name = "activity_your_name"
+location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release/activity_your_name.wasm"
+exec.lock_expiry.seconds = 5
+env_vars = ["YOUR_API_KEY"]
+forward_stdout = "stderr"
+forward_stderr = "stderr"
+```
+
+Run locally with:
+```bash
+cargo build --release
+obelisk server run --config ./obelisk-local.toml
+```
+
+### obelisk-oci.toml
+
+The `obelisk-oci.toml` file is **auto-generated** by a GitHub Action that is triggered manually. Do not create or edit this file manually.
+
 ## Adding a New Activity
 
 1. Create directory: `<category>/activity-<name>/`
@@ -231,3 +273,4 @@ fn my_function() -> Result<String, ApiError> {
 8. Implement in `src/lib.rs`
 9. Add tests
 10. Add `README.md`
+11. Add `obelisk-local.toml` for local development
