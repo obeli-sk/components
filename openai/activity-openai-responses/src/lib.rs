@@ -1,14 +1,14 @@
 #![allow(unused)]
 
-wit_bindgen::generate!({
-    world: "any",
-    path: "wit",
-    generate_all,
-});
-
 mod client;
+mod generated {
+    #![allow(clippy::empty_line_after_outer_attr)]
+    include!(concat!(env!("OUT_DIR"), "/any.rs"));
+}
 
-use exports::obelisk_components::openai_responses::api::*;
+use generated::export;
+
+use generated::exports::obelisk_components::openai_responses::api::*;
 
 const ENV_OPENAI_API_KEY: &str = "OPENAI_API_KEY";
 
@@ -57,12 +57,12 @@ impl Guest for OpenAIResponses {
     }
 }
 
-export!(OpenAIResponses);
+export!(OpenAIResponses with_types_in generated);
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use obelisk_components::openai_responses::types::{ResponseStatus, Role};
+    use generated::obelisk_components::openai_responses::types::{ResponseStatus, Role};
 
     fn set_up() {
         let test_token = std::env::var(format!("TEST_{ENV_OPENAI_API_KEY}")).unwrap_or_else(|_| {
@@ -98,7 +98,9 @@ mod tests {
     #[test]
     #[ignore]
     fn create_with_message_should_succeed() {
-        use obelisk_components::openai_responses::types::{InputContent, InputMessage};
+        use crate::generated::obelisk_components::openai_responses::types::{
+            InputContent, InputMessage,
+        };
 
         set_up();
 

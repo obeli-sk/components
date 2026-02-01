@@ -131,6 +131,49 @@ serde.workspace = true
 serde_json.workspace = true
 wit-bindgen.workspace = true
 wstd.workspace = true
+
+[build-dependencies]
+anyhow.workspace = true
+wit-bindgen-rust.workspace = true
+```
+
+### WIT Bindings Generation
+
+**Prefer using `build.rs`** over the `wit_bindgen::generate!` macro for generating WIT bindings. This provides better IDE support and more control over code generation.
+
+**build.rs:**
+```rust
+use anyhow::Result;
+use wit_bindgen_rust::Opts;
+
+fn main() -> Result<()> {
+    Opts {
+        generate_all: true,
+        ..Default::default()
+    }
+    .build()
+    .generate_to_out_dir(None)?;
+
+    Ok(())
+}
+```
+
+**src/lib.rs:**
+```rust
+mod generated {
+    #![allow(clippy::empty_line_after_outer_attr)]
+    include!(concat!(env!("OUT_DIR"), "/any.rs"));
+}
+
+use generated::export;
+use generated::exports::obelisk_components::your_package::api::*;
+
+struct Component;
+export!(Component with_types_in generated);
+
+impl Guest for Component {
+    // ...
+}
 ```
 
 ### .cargo/config.toml
@@ -280,12 +323,13 @@ The `obelisk-oci.toml` file is **auto-generated** by a GitHub Action that is tri
 1. Create directory: `<category>/activity-<name>/`
 2. Add to workspace `Cargo.toml` members
 3. Create `.cargo/config.toml` with target and runner
-4. Create `Cargo.toml` using workspace dependencies
-5. Create WIT interface in `wit/<package-name>/<interface>.wit`
-6. Create `wit/impl.wit` exporting your interface
-7. Create symlink: `wit/deps/<package-name> -> ../<package-name>`
-8. Implement in `src/lib.rs`
-9. Add tests
-10. Add `README.md` (document required env vars if any)
-11. Add `obelisk-local.toml` for local development
-12. Add `.envrc-example` if the activity requires environment variables
+4. Create `Cargo.toml` using workspace dependencies (include build-dependencies)
+5. Create `build.rs` for WIT binding generation
+6. Create WIT interface in `wit/<package-name>/<interface>.wit`
+7. Create `wit/impl.wit` exporting your interface
+8. Create symlink: `wit/deps/<package-name> -> ../<package-name>`
+9. Implement in `src/lib.rs` (use generated module pattern)
+10. Add tests
+11. Add `README.md` (document required env vars if any)
+12. Add `obelisk-local.toml` for local development
+13. Add `.envrc-example` if the activity requires environment variables
