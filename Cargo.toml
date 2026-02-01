@@ -7,6 +7,7 @@ members = [
     "github/activity-github-graphql",
     "http/activity-http-generic",
     "obelisk/activity-obelisk-client-http",
+    "openai/activity-openai-responses",
 ]
 
 [workspace.package]

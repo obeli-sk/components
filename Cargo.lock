@@ -74,6 +74,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "activity-openai-responses"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "wit-bindgen 0.52.0",
+ "wstd",
+]
+
+[[package]]
 name = "aho-corasick"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
