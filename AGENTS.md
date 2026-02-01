@@ -2,6 +2,8 @@
 
 This document provides guidelines for AI agents working on this repository.
 
+**Obelisk** is a deterministic workflow engine for durable execution. Learn more at [obeli.sk](https://obeli.sk/).
+
 ## Development Environment
 
 ### Using Nix (Recommended)
@@ -52,7 +54,9 @@ rustup target add wasm32-wasip2
 # Install wasmtime (check dev-deps.txt for version)
 curl https://wasmtime.dev/install.sh -sSf | bash
 
-# Install obelisk CLI
+# Install obelisk CLI (prefer binstall for faster installation)
+cargo binstall obelisk --version <version-from-dev-deps.txt>
+# Or if binstall is not available:
 cargo install obelisk --version <version-from-dev-deps.txt>
 ```
 
@@ -72,6 +76,7 @@ Activities are WASIp2 components that perform side effects. Each activity lives 
 ```
 <category>/activity-<name>/
 ├── .cargo/config.toml    # Build target and test runner config
+├── .envrc-example        # Example env vars (if activity requires them)
 ├── Cargo.toml            # Uses workspace dependencies
 ├── README.md
 ├── obelisk-local.toml    # Local Obelisk config (path to wasm)
@@ -84,6 +89,8 @@ Activities are WASIp2 components that perform side effects. Each activity lives 
     └── deps/
         └── <package-name> -> ../<package-name>  # Symlink to main package
 ```
+
+If the activity requires environment variables (API keys, tokens, etc.), include a `.envrc-example` file showing the required variables and document them in the README.
 
 ### WIT File Organization
 
@@ -279,5 +286,6 @@ The `obelisk-oci.toml` file is **auto-generated** by a GitHub Action that is tri
 7. Create symlink: `wit/deps/<package-name> -> ../<package-name>`
 8. Implement in `src/lib.rs`
 9. Add tests
-10. Add `README.md`
+10. Add `README.md` (document required env vars if any)
 11. Add `obelisk-local.toml` for local development
+12. Add `.envrc-example` if the activity requires environment variables
