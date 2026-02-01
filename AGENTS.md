@@ -254,6 +254,9 @@ cargo test
 export TEST_YOUR_API_KEY="..."
 cargo test -- --ignored
 
+# Integration tests with verbose output
+cargo test -- --ignored --nocapture
+
 # All tests
 cargo test -- --include-ignored
 ```

@@ -113,7 +113,7 @@ mod tests {
                 )],
             }],
             instructions: Some("You are a calculator. Only respond with numbers.".to_string()),
-            max_output_tokens: Some(10),
+            max_output_tokens: Some(50),
             metadata: None,
             parallel_tool_calls: None,
             previous_response_id: None,
