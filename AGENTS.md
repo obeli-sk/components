@@ -58,6 +58,13 @@ cargo install obelisk --version <version-from-dev-deps.txt>
 
 ## Project Structure
 
+### Naming Conventions
+
+- **Activities** (components responsible for side effects): Must start with `activity-`
+  - Example: `fly/activity-fly-http`, `openai/activity-openai-responses`
+- **Webhooks** (HTTP endpoint handlers): Must start with `webhook-`
+  - Example: `fly/webhook-fly-secrets-updater`
+
 ### Activity Components
 
 Activities are WASIp2 components that perform side effects. Each activity lives in its own directory:
