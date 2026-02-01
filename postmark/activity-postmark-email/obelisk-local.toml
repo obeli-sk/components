@@ -1,0 +1,10 @@
+api.listening_addr = "127.0.0.1:5005"
+webui.listening_addr = "127.0.0.1:8080"
+
+[[activity_wasm]]
+name = "activity_postmark_email"
+location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_postmark_email.wasm"
+exec.lock_expiry.seconds = 30
+env_vars = ["POSTMARK_SERVER_TOKEN"]
+forward_stdout = "stderr"
+forward_stderr = "stderr"

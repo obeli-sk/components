@@ -1,0 +1,143 @@
+package obelisk-components:postmark-email@0.1.0;
+
+/// Postmark Email API interface for sending emails.
+/// See: https://postmarkapp.com/developer/api/email-api
+interface email {
+    /// An email address with optional display name.
+    record email-address {
+        /// The email address (e.g., "user@example.com")
+        email: string,
+        /// Optional display name (e.g., "John Doe")
+        name: option<string>,
+    }
+
+    /// Email attachment.
+    record attachment {
+        /// Filename to display
+        name: string,
+        /// Base64-encoded content of the attachment
+        content: string,
+        /// MIME type (e.g., "application/pdf")
+        content-type: string,
+        /// Optional content ID for inline attachments (e.g., "cid:image1")
+        content-id: option<string>,
+    }
+
+    /// Header to include in the email.
+    record email-header {
+        /// Header name
+        name: string,
+        /// Header value
+        value: string,
+    }
+
+    /// Metadata key-value pair for tracking.
+    record metadata-entry {
+        /// Key (max 20 chars)
+        key: string,
+        /// Value (max 80 chars)
+        value: string,
+    }
+
+    /// Message stream type.
+    enum message-stream {
+        /// Transactional emails (default)
+        outbound,
+        /// Broadcast/marketing emails
+        broadcast,
+    }
+
+    /// A complete email message.
+    record email-message {
+        /// Sender email address (must be verified in Postmark)
+        sender: email-address,
+        /// Recipients (to)
+        to: list<email-address>,
+        /// CC recipients (optional)
+        cc: option<list<email-address>>,
+        /// BCC recipients (optional)
+        bcc: option<list<email-address>>,
+        /// Subject line
+        subject: string,
+        /// Plain text body (optional if html-body is provided)
+        text-body: option<string>,
+        /// HTML body (optional if text-body is provided)
+        html-body: option<string>,
+        /// Reply-to address (optional)
+        reply-to: option<email-address>,
+        /// Custom headers (optional)
+        headers: option<list<email-header>>,
+        /// Attachments (optional)
+        attachments: option<list<attachment>>,
+        /// Tag for categorization (optional)
+        tag: option<string>,
+        /// Metadata for tracking (optional, max 10 entries)
+        metadata: option<list<metadata-entry>>,
+        /// Message stream (optional, defaults to outbound)
+        message-stream: option<message-stream>,
+        /// Track opens (optional)
+        track-opens: option<bool>,
+        /// Track links: none, html-and-text, html-only, text-only
+        track-links: option<string>,
+    }
+
+    /// Simple email parameters for basic use cases.
+    record simple-email {
+        /// Sender email address
+        from-email: string,
+        /// Optional sender display name
+        from-name: option<string>,
+        /// Recipient email address
+        to-email: string,
+        /// Optional recipient display name
+        to-name: option<string>,
+        /// Subject line
+        subject: string,
+        /// Plain text content (optional if html-body is provided)
+        text-body: option<string>,
+        /// HTML content (optional if text-body is provided)
+        html-body: option<string>,
+        /// Tag for categorization (optional)
+        tag: option<string>,
+    }
+
+    /// Response from a successful send operation.
+    record send-response {
+        /// The message ID assigned by Postmark
+        message-id: string,
+        /// Recipient email address
+        to: string,
+        /// Timestamp when submitted
+        submitted-at: string,
+    }
+
+    /// Errors that can occur when sending email.
+    variant send-error {
+        /// Required for Obelisk - indicates timeout or trap in last retry.
+        execution-failed,
+        /// Configuration error (e.g., missing API token)
+        configuration-error(string),
+        /// Invalid request (e.g., malformed email address)
+        validation-error(string),
+        /// Postmark API returned an error
+        api-error(api-error-detail),
+        /// Network or HTTP error
+        request-failed(string),
+    }
+
+    /// Error details from Postmark API.
+    record api-error-detail {
+        /// Error code from Postmark
+        error-code: u32,
+        /// Error message
+        message: string,
+    }
+
+    /// Send a simple email (convenience function for basic use cases).
+    /// Requires POSTMARK_SERVER_TOKEN environment variable.
+    send-simple: func(email: simple-email) -> result<send-response, send-error>;
+
+    /// Send a full email message with all Postmark options.
+    /// Requires POSTMARK_SERVER_TOKEN environment variable.
+    send: func(message: email-message) -> result<send-response, send-error>;
+}

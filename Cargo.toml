@@ -8,6 +8,7 @@ members = [
     "http/activity-http-generic",
     "obelisk/activity-obelisk-client-http",
     "openai/activity-openai-responses",
+    "postmark/activity-postmark-email",
 ]
 
 [workspace.package]
