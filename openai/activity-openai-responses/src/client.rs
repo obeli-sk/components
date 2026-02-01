@@ -1,13 +1,12 @@
 use crate::exports::obelisk_components::openai_responses::api::{
-    CreateResponseRequest, ListInputItemsResult, ListResponsesResult,
-    Response, SimpleRequest,
+    CreateResponseRequest, ListInputItemsResult, ListResponsesResult, Response, SimpleRequest,
 };
 use crate::obelisk_components::openai_responses::types::{
-    Annotation, ApiError, ApiErrorDetails, FileCitation, FilePath, ImageDetail, 
-    IncompleteDetails, InputContent, InputItem, InputMessage, InputTokensDetails, 
-    ItemStatus, OutputContent, OutputItem, OutputMessage, OutputText, OutputTokensDetails, 
-    ReasoningOutput, ReasoningSummaryItem, ResponseError, ResponseStatus, Role, 
-    SearchContextSize, Tool, Truncation, UrlCitation, Usage, FunctionCallOutput, WebSearchOutput,
+    Annotation, ApiError, ApiErrorDetails, FileCitation, FilePath, FunctionCallOutput, ImageDetail,
+    IncompleteDetails, InputContent, InputItem, InputMessage, InputTokensDetails, ItemStatus,
+    OutputContent, OutputItem, OutputMessage, OutputText, OutputTokensDetails, ReasoningOutput,
+    ReasoningSummaryItem, ResponseError, ResponseStatus, Role, SearchContextSize, Tool, Truncation,
+    UrlCitation, Usage, WebSearchOutput,
 };
 use serde::{Deserialize, Serialize};
 use wstd::http::{Body, Client, HeaderValue, Request};
@@ -183,9 +182,9 @@ fn convert_response(jr: JsonResponse) -> Response {
             code: e.code,
             message: e.message,
         }),
-        incomplete_details: jr.incomplete_details.map(|d| IncompleteDetails {
-            reason: d.reason,
-        }),
+        incomplete_details: jr
+            .incomplete_details
+            .map(|d| IncompleteDetails { reason: d.reason }),
         instructions: jr.instructions,
         metadata: jr.metadata.map(|m| m.into_iter().collect()),
         parallel_tool_calls: jr.parallel_tool_calls,
@@ -204,7 +203,9 @@ fn convert_output_item(v: serde_json::Value) -> OutputItem {
     let type_ = v.get("type").and_then(|t| t.as_str()).unwrap_or("");
     match type_ {
         "message" => {
-            let content = v.get("content").and_then(|c| c.as_array())
+            let content = v
+                .get("content")
+                .and_then(|c| c.as_array())
                 .map(|arr| arr.iter().map(convert_output_content).collect())
                 .unwrap_or_default();
             OutputItem::Message(OutputMessage {
@@ -221,9 +222,17 @@ fn convert_output_item(v: serde_json::Value) -> OutputItem {
         }
         "function_call" => OutputItem::FunctionCall(FunctionCallOutput {
             id: v.get("id").and_then(|x| x.as_str()).unwrap_or("").into(),
-            call_id: v.get("call_id").and_then(|x| x.as_str()).unwrap_or("").into(),
+            call_id: v
+                .get("call_id")
+                .and_then(|x| x.as_str())
+                .unwrap_or("")
+                .into(),
             name: v.get("name").and_then(|x| x.as_str()).unwrap_or("").into(),
-            arguments: v.get("arguments").and_then(|x| x.as_str()).unwrap_or("").into(),
+            arguments: v
+                .get("arguments")
+                .and_then(|x| x.as_str())
+                .unwrap_or("")
+                .into(),
             status: convert_item_status(v.get("status").and_then(|s| s.as_str())),
         }),
         "web_search_call" => OutputItem::WebSearchCall(WebSearchOutput {
@@ -232,11 +241,25 @@ fn convert_output_item(v: serde_json::Value) -> OutputItem {
         }),
         "reasoning" => OutputItem::Reasoning(ReasoningOutput {
             id: v.get("id").and_then(|x| x.as_str()).unwrap_or("").into(),
-            summary: v.get("summary").and_then(|s| s.as_array())
-                .map(|arr| arr.iter().map(|item| ReasoningSummaryItem {
-                    type_: item.get("type").and_then(|t| t.as_str()).unwrap_or("").into(),
-                    text: item.get("text").and_then(|t| t.as_str()).unwrap_or("").into(),
-                }).collect())
+            summary: v
+                .get("summary")
+                .and_then(|s| s.as_array())
+                .map(|arr| {
+                    arr.iter()
+                        .map(|item| ReasoningSummaryItem {
+                            type_: item
+                                .get("type")
+                                .and_then(|t| t.as_str())
+                                .unwrap_or("")
+                                .into(),
+                            text: item
+                                .get("text")
+                                .and_then(|t| t.as_str())
+                                .unwrap_or("")
+                                .into(),
+                        })
+                        .collect()
+                })
                 .unwrap_or_default(),
             status: convert_item_status(v.get("status").and_then(|s| s.as_str())),
         }),
@@ -253,11 +276,16 @@ fn convert_output_content(v: &serde_json::Value) -> OutputContent {
     let type_ = v.get("type").and_then(|t| t.as_str()).unwrap_or("");
     match type_ {
         "refusal" => OutputContent::Refusal(
-            v.get("refusal").and_then(|r| r.as_str()).unwrap_or("").into()
+            v.get("refusal")
+                .and_then(|r| r.as_str())
+                .unwrap_or("")
+                .into(),
         ),
         _ => OutputContent::Text(OutputText {
             text: v.get("text").and_then(|t| t.as_str()).unwrap_or("").into(),
-            annotations: v.get("annotations").and_then(|a| a.as_array())
+            annotations: v
+                .get("annotations")
+                .and_then(|a| a.as_array())
                 .map(|arr| arr.iter().filter_map(convert_annotation).collect())
                 .unwrap_or_default(),
         }),
@@ -274,11 +302,19 @@ fn convert_annotation(v: &serde_json::Value) -> Option<Annotation> {
             end_index: v.get("end_index").and_then(|i| i.as_u64()).unwrap_or(0) as u32,
         })),
         "file_citation" => Some(Annotation::FileCitation(FileCitation {
-            file_id: v.get("file_id").and_then(|f| f.as_str()).unwrap_or("").into(),
+            file_id: v
+                .get("file_id")
+                .and_then(|f| f.as_str())
+                .unwrap_or("")
+                .into(),
             index: v.get("index").and_then(|i| i.as_u64()).unwrap_or(0) as u32,
         })),
         "file_path" => Some(Annotation::FilePath(FilePath {
-            file_id: v.get("file_id").and_then(|f| f.as_str()).unwrap_or("").into(),
+            file_id: v
+                .get("file_id")
+                .and_then(|f| f.as_str())
+                .unwrap_or("")
+                .into(),
             index: v.get("index").and_then(|i| i.as_u64()).unwrap_or(0) as u32,
         })),
         _ => None,
@@ -296,30 +332,42 @@ fn convert_item_status(s: Option<&str>) -> ItemStatus {
 async fn do_request(method: &str, path: &str, body: Option<&str>) -> Result<Vec<u8>, ApiError> {
     let api_key = get_api_key()?;
     let url = format!("{}{}", API_BASE, path);
-    
+
     let req = match method {
         "GET" => Request::get(&url),
         "DELETE" => Request::delete(&url),
         _ => Request::post(&url),
     };
-    
+
     let req = req
-        .header("Authorization", HeaderValue::from_str(&format!("Bearer {}", api_key)).map_err(|e| request_error(&e.to_string()))?)
+        .header(
+            "Authorization",
+            HeaderValue::from_str(&format!("Bearer {}", api_key))
+                .map_err(|e| request_error(&e.to_string()))?,
+        )
         .header("Content-Type", HeaderValue::from_static("application/json"));
-    
+
     let req = if let Some(b) = body {
-        req.body(Body::from(b.to_string())).map_err(|e| request_error(&e.to_string()))?
+        req.body(Body::from(b.to_string()))
+            .map_err(|e| request_error(&e.to_string()))?
     } else {
-        req.body(Body::empty()).map_err(|e| request_error(&e.to_string()))?
+        req.body(Body::empty())
+            .map_err(|e| request_error(&e.to_string()))?
     };
-    
-    let resp = Client::new().send(req).await.map_err(|e| request_error(&e.to_string()))?;
+
+    let resp = Client::new()
+        .send(req)
+        .await
+        .map_err(|e| request_error(&e.to_string()))?;
     let status = resp.status();
     let mut body = resp.into_body();
-    let bytes = body.contents().await.map_err(|e| request_error(&e.to_string()))?;
-    
+    let bytes = body
+        .contents()
+        .await
+        .map_err(|e| request_error(&e.to_string()))?;
+
     if !status.is_success() {
-        if let Ok(err) = serde_json::from_slice::<JsonApiError>(&bytes) {
+        if let Ok(err) = serde_json::from_slice::<JsonApiError>(bytes) {
             return Err(ApiError::ApiError(ApiErrorDetails {
                 code: err.error.code.unwrap_or_default(),
                 message: err.error.message,
@@ -327,9 +375,13 @@ async fn do_request(method: &str, path: &str, body: Option<&str>) -> Result<Vec<
                 type_: err.error.type_,
             }));
         }
-        return Err(request_error(&format!("HTTP {}: {}", status.as_u16(), String::from_utf8_lossy(&bytes))));
+        return Err(request_error(&format!(
+            "HTTP {}: {}",
+            status.as_u16(),
+            String::from_utf8_lossy(bytes)
+        )));
     }
-    
+
     Ok(bytes.to_vec())
 }
 
@@ -340,27 +392,31 @@ fn convert_input_message(msg: &InputMessage) -> serde_json::Value {
         Role::System => "system",
         Role::Developer => "developer",
     };
-    let content: Vec<serde_json::Value> = msg.content.iter().map(|c| match c {
-        InputContent::Text(t) => serde_json::json!({ "type": "input_text", "text": t }),
-        InputContent::ImageUrl(img) => serde_json::json!({
-            "type": "input_image",
-            "image_url": img.url,
-            "detail": img.detail.as_ref().map(|d| match d {
-                ImageDetail::Low => "low",
-                ImageDetail::High => "high",
-                ImageDetail::Auto => "auto",
-            })
-        }),
-        InputContent::ImageFile(img) => serde_json::json!({
-            "type": "input_image",
-            "file_id": img.file_id,
-            "detail": img.detail.as_ref().map(|d| match d {
-                ImageDetail::Low => "low",
-                ImageDetail::High => "high",
-                ImageDetail::Auto => "auto",
-            })
-        }),
-    }).collect();
+    let content: Vec<serde_json::Value> = msg
+        .content
+        .iter()
+        .map(|c| match c {
+            InputContent::Text(t) => serde_json::json!({ "type": "input_text", "text": t }),
+            InputContent::ImageUrl(img) => serde_json::json!({
+                "type": "input_image",
+                "image_url": img.url,
+                "detail": img.detail.as_ref().map(|d| match d {
+                    ImageDetail::Low => "low",
+                    ImageDetail::High => "high",
+                    ImageDetail::Auto => "auto",
+                })
+            }),
+            InputContent::ImageFile(img) => serde_json::json!({
+                "type": "input_image",
+                "file_id": img.file_id,
+                "detail": img.detail.as_ref().map(|d| match d {
+                    ImageDetail::Low => "low",
+                    ImageDetail::High => "high",
+                    ImageDetail::Auto => "auto",
+                })
+            }),
+        })
+        .collect();
     serde_json::json!({ "role": role, "content": content })
 }
 
@@ -401,8 +457,11 @@ fn convert_tool(tool: &Tool) -> serde_json::Value {
 
 pub async fn create_response(request: CreateResponseRequest) -> Result<Response, ApiError> {
     let input: Vec<serde_json::Value> = request.input.iter().map(convert_input_message).collect();
-    let tools: Option<Vec<serde_json::Value>> = request.tools.as_ref().map(|t| t.iter().map(convert_tool).collect());
-    
+    let tools: Option<Vec<serde_json::Value>> = request
+        .tools
+        .as_ref()
+        .map(|t| t.iter().map(convert_tool).collect());
+
     let req = JsonRequest {
         model: request.model,
         input: serde_json::Value::Array(input),
@@ -414,16 +473,20 @@ pub async fn create_response(request: CreateResponseRequest) -> Result<Response,
         metadata: request.metadata.map(|m| m.into_iter().collect()),
         tools,
     };
-    
+
     let body = serde_json::to_string(&req).map_err(|e| parse_error(&e.to_string()))?;
     let bytes = do_request("POST", "/responses", Some(&body)).await?;
-    let jr: JsonResponse = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    let jr: JsonResponse =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(convert_response(jr))
 }
 
 pub async fn create_simple_response(request: SimpleRequest) -> Result<Response, ApiError> {
-    let tools: Option<Vec<serde_json::Value>> = request.tools.as_ref().map(|t| t.iter().map(convert_tool).collect());
-    
+    let tools: Option<Vec<serde_json::Value>> = request
+        .tools
+        .as_ref()
+        .map(|t| t.iter().map(convert_tool).collect());
+
     let req = JsonRequest {
         model: request.model,
         input: serde_json::Value::String(request.input),
@@ -435,16 +498,18 @@ pub async fn create_simple_response(request: SimpleRequest) -> Result<Response, 
         metadata: None,
         tools,
     };
-    
+
     let body = serde_json::to_string(&req).map_err(|e| parse_error(&e.to_string()))?;
     let bytes = do_request("POST", "/responses", Some(&body)).await?;
-    let jr: JsonResponse = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    let jr: JsonResponse =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(convert_response(jr))
 }
 
 pub async fn get_response(response_id: &str) -> Result<Response, ApiError> {
     let bytes = do_request("GET", &format!("/responses/{}", response_id), None).await?;
-    let jr: JsonResponse = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    let jr: JsonResponse =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(convert_response(jr))
 }
 
@@ -460,14 +525,27 @@ pub async fn list_responses(
     before: Option<String>,
 ) -> Result<ListResponsesResult, ApiError> {
     let mut params = vec![];
-    if let Some(l) = limit { params.push(format!("limit={}", l)); }
-    if let Some(o) = order { params.push(format!("order={}", o)); }
-    if let Some(a) = after { params.push(format!("after={}", a)); }
-    if let Some(b) = before { params.push(format!("before={}", b)); }
-    let qs = if params.is_empty() { String::new() } else { format!("?{}", params.join("&")) };
-    
+    if let Some(l) = limit {
+        params.push(format!("limit={}", l));
+    }
+    if let Some(o) = order {
+        params.push(format!("order={}", o));
+    }
+    if let Some(a) = after {
+        params.push(format!("after={}", a));
+    }
+    if let Some(b) = before {
+        params.push(format!("before={}", b));
+    }
+    let qs = if params.is_empty() {
+        String::new()
+    } else {
+        format!("?{}", params.join("&"))
+    };
+
     let bytes = do_request("GET", &format!("/responses{}", qs), None).await?;
-    let jr: JsonListResponse = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    let jr: JsonListResponse =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(ListResponsesResult {
         object: jr.object,
         data: jr.data.into_iter().map(convert_response).collect(),
@@ -485,21 +563,43 @@ pub async fn list_input_items(
     before: Option<String>,
 ) -> Result<ListInputItemsResult, ApiError> {
     let mut params = vec![];
-    if let Some(l) = limit { params.push(format!("limit={}", l)); }
-    if let Some(o) = order { params.push(format!("order={}", o)); }
-    if let Some(a) = after { params.push(format!("after={}", a)); }
-    if let Some(b) = before { params.push(format!("before={}", b)); }
-    let qs = if params.is_empty() { String::new() } else { format!("?{}", params.join("&")) };
-    
-    let bytes = do_request("GET", &format!("/responses/{}/input_items{}", response_id, qs), None).await?;
-    let jr: JsonListInputItems = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    if let Some(l) = limit {
+        params.push(format!("limit={}", l));
+    }
+    if let Some(o) = order {
+        params.push(format!("order={}", o));
+    }
+    if let Some(a) = after {
+        params.push(format!("after={}", a));
+    }
+    if let Some(b) = before {
+        params.push(format!("before={}", b));
+    }
+    let qs = if params.is_empty() {
+        String::new()
+    } else {
+        format!("?{}", params.join("&"))
+    };
+
+    let bytes = do_request(
+        "GET",
+        &format!("/responses/{}/input_items{}", response_id, qs),
+        None,
+    )
+    .await?;
+    let jr: JsonListInputItems =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(ListInputItemsResult {
         object: jr.object,
-        data: jr.data.into_iter().map(|i| InputItem {
-            id: i.id,
-            type_: i.type_,
-            content: i.content.map(|c| c.to_string()),
-        }).collect(),
+        data: jr
+            .data
+            .into_iter()
+            .map(|i| InputItem {
+                id: i.id,
+                type_: i.type_,
+                content: i.content.map(|c| c.to_string()),
+            })
+            .collect(),
         has_more: jr.has_more,
         first_id: jr.first_id,
         last_id: jr.last_id,
@@ -508,6 +608,7 @@ pub async fn list_input_items(
 
 pub async fn cancel_response(response_id: &str) -> Result<Response, ApiError> {
     let bytes = do_request("POST", &format!("/responses/{}/cancel", response_id), None).await?;
-    let jr: JsonResponse = serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
+    let jr: JsonResponse =
+        serde_json::from_slice(&bytes).map_err(|e| parse_error(&e.to_string()))?;
     Ok(convert_response(jr))
 }
