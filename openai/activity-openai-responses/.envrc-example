@@ -1,0 +1,7 @@
+use flake ..
+
+# OpenAI API key - get one at https://platform.openai.com/api-keys
+export OPENAI_API_KEY="sk-..."
+
+# For running integration tests
+export TEST_OPENAI_API_KEY="$OPENAI_API_KEY"
