@@ -77,9 +77,11 @@ dependencies = [
 name = "activity-openai-responses"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "serde",
  "serde_json",
  "wit-bindgen 0.52.0",
+ "wit-bindgen-rust",
  "wstd",
 ]
 

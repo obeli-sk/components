@@ -1,7 +1,7 @@
-use crate::exports::obelisk_components::openai_responses::api::{
+use crate::generated::exports::obelisk_components::openai_responses::api::{
     CreateResponseRequest, ListInputItemsResult, ListResponsesResult, Response, SimpleRequest,
 };
-use crate::obelisk_components::openai_responses::types::{
+use crate::generated::obelisk_components::openai_responses::types::{
     Annotation, ApiError, ApiErrorDetails, FileCitation, FilePath, FunctionCallOutput, ImageDetail,
     IncompleteDetails, InputContent, InputItem, InputMessage, InputTokensDetails, ItemStatus,
     OutputContent, OutputItem, OutputMessage, OutputText, OutputTokensDetails, ReasoningOutput,
