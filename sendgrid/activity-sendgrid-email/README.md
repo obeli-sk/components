@@ -24,50 +24,62 @@ An Obelisk activity for sending emails via the [SendGrid API](https://docs.sendg
 
 ## Usage Examples
 
+First, start the Obelisk server:
+
+```bash
+export SENDGRID_API_KEY="SG.your-api-key"
+obelisk server run --config ./obelisk-local.toml
+```
+
+Then submit executions using the CLI:
+
 ### Simple Email
 
-```wit
-send-simple(simple-email {
-    from-email: "sender@yourdomain.com",
-    from-name: some("Your Name"),
-    to-email: "recipient@example.com",
-    to-name: some("Recipient Name"),
-    subject: "Hello from Obelisk!",
-    text-content: some("Plain text version"),
-    html-content: some("<h1>HTML version</h1>"),
-})
+```bash
+obelisk client execution submit \
+  obelisk-components:sendgrid-email/email.send-simple \
+  '{
+    "from_email": "sender@yourdomain.com",
+    "from_name": "Your Name",
+    "to_email": "recipient@example.com",
+    "to_name": "Recipient Name",
+    "subject": "Hello from Obelisk!",
+    "text_content": "Plain text version",
+    "html_content": "<h1>HTML version</h1>"
+  }'
 ```
 
 ### Full Email with Attachments
 
-```wit
-send(email-message {
-    sender: email-address { email: "sender@yourdomain.com", name: some("Sender") },
-    subject: "Document Attached",
-    personalizations: [
-        personalization {
-            to: [email-address { email: "recipient@example.com", name: none }],
-            cc: some([email-address { email: "cc@example.com", name: none }]),
-            bcc: none,
-            subject: none,
-        }
+```bash
+obelisk client execution submit \
+  obelisk-components:sendgrid-email/email.send \
+  '{
+    "sender": { "email": "sender@yourdomain.com", "name": "Sender" },
+    "subject": "Document Attached",
+    "personalizations": [
+      {
+        "to": [{ "email": "recipient@example.com", "name": null }],
+        "cc": [{ "email": "cc@example.com", "name": null }],
+        "bcc": null,
+        "subject": null
+      }
     ],
-    content: [
-        content { mime-type: "text/plain", value: "Please see attached." },
-        content { mime-type: "text/html", value: "<p>Please see attached.</p>" },
+    "content": [
+      { "mime_type": "text/plain", "value": "Please see attached." },
+      { "mime_type": "text/html", "value": "<p>Please see attached.</p>" }
     ],
-    reply-to: some(email-address { email: "reply@yourdomain.com", name: none }),
-    attachments: some([
-        attachment {
-            content: "base64-encoded-content-here",
-            filename: "document.pdf",
-            mime-type: some("application/pdf"),
-            disposition: some("attachment"),
-            content-id: none,
-        }
-    ]),
-})
-```
+    "reply_to": { "email": "reply@yourdomain.com", "name": null },
+    "attachments": [
+      {
+        "content": "base64-encoded-content-here",
+        "filename": "document.pdf",
+        "mime_type": "application/pdf",
+        "disposition": "attachment",
+        "content_id": null
+      }
+    ]
+  }'
 
 ## Error Handling
 
