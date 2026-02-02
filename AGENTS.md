@@ -314,6 +314,16 @@ cargo build --release
 obelisk server run --config ./obelisk-local.toml
 ```
 
+Submit an execution (in another terminal):
+```bash
+obelisk client execution submit --follow \
+  <package>:<interface>/<function-name> \
+  -- '<json-param-1>' '<json-param-2>' ...
+```
+
+Parameters are JSON values with snake_case field names (matching serde serialization).
+Use `--follow` to see the execution output.
+
 ### obelisk-oci.toml
 
 The `obelisk-oci.toml` file is **auto-generated** by a GitHub Action that is triggered manually. Do not create or edit this file manually.
