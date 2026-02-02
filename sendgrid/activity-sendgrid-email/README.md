@@ -36,9 +36,9 @@ Then submit executions using the CLI:
 ### Simple Email
 
 ```bash
-obelisk client execution submit \
+obelisk client execution submit --follow \
   obelisk-components:sendgrid-email/email.send-simple \
-  '{
+  -- '{
     "from_email": "sender@yourdomain.com",
     "from_name": "Your Name",
     "to_email": "recipient@example.com",
@@ -52,9 +52,9 @@ obelisk client execution submit \
 ### Full Email with Attachments
 
 ```bash
-obelisk client execution submit \
+obelisk client execution submit --follow \
   obelisk-components:sendgrid-email/email.send \
-  '{
+  -- '{
     "sender": { "email": "sender@yourdomain.com", "name": "Sender" },
     "subject": "Document Attached",
     "personalizations": [
