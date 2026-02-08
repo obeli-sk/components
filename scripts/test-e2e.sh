@@ -37,11 +37,11 @@ start_mock_server() {
     local name="$1"
     local script="$2"
     local port="$3"
-    
+
     echo "Starting mock $name server on port $port..."
     python3 "$script" "$port" &
     MOCK_PIDS+=("$!")
-    
+
     # Wait for server to be ready
     local retries=0
     while ! curl -s "http://127.0.0.1:$port" > /dev/null 2>&1; do
@@ -58,10 +58,10 @@ start_mock_server() {
 run_openai_tests() {
     echo "=== Running OpenAI e2e tests ==="
     start_mock_server "OpenAI" "./scripts/mocks/mock-openai-server.py" "$MOCK_OPENAI_PORT"
-    
+
     export TEST_OPENAI_API_KEY="mock-api-key-for-testing"
     export TEST_OPENAI_API_BASE_URL="http://127.0.0.1:$MOCK_OPENAI_PORT/v1"
-    
+
     (
         cd openai/activity-openai-responses
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
@@ -71,10 +71,10 @@ run_openai_tests() {
 run_sendgrid_tests() {
     echo "=== Running SendGrid e2e tests ==="
     start_mock_server "SendGrid" "./scripts/mocks/mock-sendgrid-server.py" "$MOCK_SENDGRID_PORT"
-    
+
     export TEST_SENDGRID_API_KEY="mock-api-key-for-testing"
     export TEST_SENDGRID_API_URL="http://127.0.0.1:$MOCK_SENDGRID_PORT/v3/mail/send"
-    
+
     (
         cd sendgrid/activity-sendgrid-email
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
@@ -84,10 +84,10 @@ run_sendgrid_tests() {
 run_postmark_tests() {
     echo "=== Running Postmark e2e tests ==="
     start_mock_server "Postmark" "./scripts/mocks/mock-postmark-server.py" "$MOCK_POSTMARK_PORT"
-    
+
     export TEST_POSTMARK_SERVER_TOKEN="mock-server-token-for-testing"
     export TEST_POSTMARK_API_URL="http://127.0.0.1:$MOCK_POSTMARK_PORT/email"
-    
+
     (
         cd postmark/activity-postmark-email
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
@@ -97,9 +97,9 @@ run_postmark_tests() {
 run_http_tests() {
     echo "=== Running HTTP e2e tests ==="
     start_mock_server "HTTP" "./scripts/mocks/mock-http-server.py" "$MOCK_HTTP_PORT"
-    
+
     export TEST_HTTP_BASE_URL="http://127.0.0.1:$MOCK_HTTP_PORT"
-    
+
     (
         cd http/activity-http-generic
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
@@ -108,20 +108,20 @@ run_http_tests() {
 
 run_github_tests() {
     echo "=== Running GitHub e2e tests ==="
-    
+
     if [[ -z "${TEST_GITHUB_TOKEN:-}" ]]; then
         echo "TEST_GITHUB_TOKEN not set, skipping GitHub tests"
         return 0
     fi
-    
+
     if [[ -z "${TEST_GITHUB_LOGIN:-}" ]]; then
         export TEST_GITHUB_LOGIN="obeli-sk"
     fi
-    
+
     if [[ -z "${TEST_GITHUB_REPO:-}" ]]; then
         export TEST_GITHUB_REPO="https://github.com/obeli-sk/obelisk"
     fi
-    
+
     (
         cd github/activity-github-graphql
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
@@ -130,12 +130,7 @@ run_github_tests() {
 
 run_fly_tests() {
     echo "=== Running Fly.io e2e tests ==="
-    
-    if [[ -z "${TEST_FLY_API_TOKEN:-}" ]]; then
-        echo "TEST_FLY_API_TOKEN not set, skipping Fly.io tests"
-        return 0
-    fi
-    
+
     (
         cd fly/activity-fly-http
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1

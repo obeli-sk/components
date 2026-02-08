@@ -101,5 +101,5 @@ jobs:
 
       - name: Run Fly.io e2e tests
         env:
-          TEST_FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          TEST_FLY_API_TOKEN: ${{ secrets.TEST_FLY_API_TOKEN }}
         run: nix develop --command ./scripts/test-e2e.sh fly
