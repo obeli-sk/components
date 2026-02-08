@@ -25,6 +25,9 @@ all-verify: all-verify-local all-verify-oci
 all-test *args:
 	cargo nextest run --workspace {{args}}
 
+all-test-e2e *args:
+	./scripts/test-e2e.sh {{args}}
+
 all-push target:
 	just run-all push {{target}}
 

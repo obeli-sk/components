@@ -343,3 +343,51 @@ The `obelisk-oci.toml` file is **auto-generated** by a GitHub Action that is tri
 11. Add `README.md` (document required env vars if any)
 12. Add `obelisk-local.toml` for local development
 13. Add `.envrc-example` if the activity requires environment variables
+
+## End-to-End Testing
+
+E2E tests verify the components work correctly against real (or mock) APIs.
+
+### Running E2E Tests
+
+```bash
+# Run all e2e tests with mock servers
+./scripts/test-e2e.sh all
+
+# Run specific component tests
+./scripts/test-e2e.sh openai    # Uses mock server
+./scripts/test-e2e.sh sendgrid  # Uses mock server  
+./scripts/test-e2e.sh postmark  # Uses mock server
+./scripts/test-e2e.sh http      # Uses mock server
+./scripts/test-e2e.sh github    # Uses real API (requires TEST_GITHUB_TOKEN)
+./scripts/test-e2e.sh fly       # Uses real API (requires TEST_FLY_API_TOKEN)
+```
+
+### Mock Servers
+
+Mock servers are provided in `scripts/mocks/` for testing without real API credentials:
+
+- `mock-openai-server.py` - Mocks OpenAI Responses API
+- `mock-sendgrid-server.py` - Mocks SendGrid Mail Send API
+- `mock-postmark-server.py` - Mocks Postmark Email API
+- `mock-http-server.py` - Generic HTTP echo server
+
+### Environment Variables for E2E Tests
+
+**Mock-based tests (no real credentials needed):**
+- Tests automatically set up mock environment variables
+
+**Real API tests:**
+- `TEST_GITHUB_TOKEN` - GitHub Personal Access Token
+- `TEST_GITHUB_LOGIN` - GitHub username to test against (default: obeli-sk)
+- `TEST_GITHUB_REPO` - GitHub repo URL to test against
+- `TEST_FLY_API_TOKEN` - Fly.io API token
+- `TEST_FLY_ORG` - Fly.io organization slug (default: personal)
+
+### Configurable API Base URLs
+
+Components support configurable API base URLs for testing:
+
+- `OPENAI_API_BASE_URL` - Override OpenAI API endpoint
+- `SENDGRID_API_URL` - Override SendGrid API endpoint
+- `POSTMARK_API_URL` - Override Postmark API endpoint

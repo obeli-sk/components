@@ -126,3 +126,122 @@ async fn handle_request(
         body: body_option,
     })
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const ENV_TEST_BASE_URL: &str = "TEST_HTTP_BASE_URL";
+
+    fn get_test_url(path: &str) -> String {
+        let base = std::env::var(ENV_TEST_BASE_URL)
+            .expect("TEST_HTTP_BASE_URL must be set for e2e tests");
+        format!("{}{}", base.trim_end_matches('/'), path)
+    }
+
+    #[test]
+    #[ignore]
+    fn test_get_request() {
+        let url = get_test_url("/echo");
+        let result = Component::request(WitMethod::Get, url, vec![], None);
+        let response = result.expect("GET request should succeed");
+        
+        assert_eq!(response.status_code, 200);
+        match response.body {
+            Some(ResponseBody::Text(body)) => {
+                assert!(body.contains("GET"), "Expected body to contain GET method, got: {}", body);
+            }
+            other => panic!("Expected text response, got: {:?}", other),
+        }
+    }
+
+    #[test]
+    #[ignore]
+    fn test_post_request_with_body() {
+        let url = get_test_url("/echo");
+        let body = RequestBody::Text("{\"test\": \"data\"}".to_string());
+        let headers = vec![
+            ("Content-Type".to_string(), "application/json".to_string()),
+        ];
+        
+        let result = Component::request(WitMethod::Post, url, headers, Some(body));
+        let response = result.expect("POST request should succeed");
+        
+        assert_eq!(response.status_code, 200);
+        match response.body {
+            Some(ResponseBody::Text(body)) => {
+                assert!(body.contains("POST"), "Expected body to contain POST method, got: {}", body);
+                assert!(body.contains("test"), "Expected body to contain test data, got: {}", body);
+            }
+            other => panic!("Expected text response, got: {:?}", other),
+        }
+    }
+
+    #[test]
+    #[ignore]
+    fn test_404_response() {
+        let url = get_test_url("/status/404");
+        let result = Component::request(WitMethod::Get, url, vec![], None);
+        let response = result.expect("Request should complete even with 404");
+        
+        assert_eq!(response.status_code, 404);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_empty_response() {
+        let url = get_test_url("/empty");
+        let result = Component::request(WitMethod::Get, url, vec![], None);
+        let response = result.expect("Request should succeed");
+        
+        assert_eq!(response.status_code, 204);
+        assert!(response.body.is_none());
+    }
+
+    #[test]
+    #[ignore]
+    fn test_binary_response() {
+        let url = get_test_url("/binary");
+        let result = Component::request(WitMethod::Get, url, vec![], None);
+        let response = result.expect("Request should succeed");
+        
+        assert_eq!(response.status_code, 200);
+        assert!(matches!(response.body, Some(ResponseBody::Binary(_))));
+    }
+
+    #[test]
+    #[ignore]
+    fn test_put_request() {
+        let url = get_test_url("/echo");
+        let body = RequestBody::Text("update data".to_string());
+        
+        let result = Component::request(WitMethod::Put, url, vec![], Some(body));
+        let response = result.expect("PUT request should succeed");
+        
+        assert_eq!(response.status_code, 200);
+        match response.body {
+            Some(ResponseBody::Text(body)) => {
+                assert!(body.contains("PUT"), "Expected body to contain PUT method, got: {}", body);
+            }
+            other => panic!("Expected text response, got: {:?}", other),
+        }
+    }
+
+    #[test]
+    #[ignore]
+    fn test_delete_request() {
+        let url = get_test_url("/echo");
+        
+        let result = Component::request(WitMethod::Delete, url, vec![], None);
+        let response = result.expect("DELETE request should succeed");
+        
+        assert_eq!(response.status_code, 200);
+        match response.body {
+            Some(ResponseBody::Text(body)) => {
+                assert!(body.contains("DELETE"), "Expected body to contain DELETE method, got: {}", body);
+            }
+            other => panic!("Expected text response, got: {:?}", other),
+        }
+    }
+}

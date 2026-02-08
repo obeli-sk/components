@@ -19,8 +19,13 @@ mod generated {
 struct Component;
 export!(Component with_types_in generated);
 
-const POSTMARK_API_URL: &str = "https://api.postmarkapp.com/email";
-const POSTMARK_SERVER_TOKEN: &str = "POSTMARK_SERVER_TOKEN";
+const DEFAULT_POSTMARK_API_URL: &str = "https://api.postmarkapp.com/email";
+const ENV_POSTMARK_SERVER_TOKEN: &str = "POSTMARK_SERVER_TOKEN";
+const ENV_POSTMARK_API_URL: &str = "POSTMARK_API_URL";
+
+fn get_api_url() -> String {
+    std::env::var(ENV_POSTMARK_API_URL).unwrap_or_else(|_| DEFAULT_POSTMARK_API_URL.to_string())
+}
 
 /// Postmark API request body structure
 #[derive(Serialize)]
@@ -131,10 +136,10 @@ impl From<&EmailHeader> for PostmarkHeader {
 }
 
 fn get_server_token() -> Result<String, SendError> {
-    std::env::var(POSTMARK_SERVER_TOKEN).map_err(|_| {
+    std::env::var(ENV_POSTMARK_SERVER_TOKEN).map_err(|_| {
         SendError::ConfigurationError(format!(
             "Environment variable {} is not set",
-            POSTMARK_SERVER_TOKEN
+            ENV_POSTMARK_SERVER_TOKEN
         ))
     })
 }
@@ -158,7 +163,8 @@ async fn send_request(body: PostmarkRequest) -> Result<SendResponse, SendError> 
     let json_body = serde_json::to_string(&body)
         .map_err(|e| SendError::ValidationError(format!("Failed to serialize request: {}", e)))?;
 
-    let req = Request::post(POSTMARK_API_URL)
+    let api_url = get_api_url();
+    let req = Request::post(&api_url)
         .header("Accept", "application/json")
         .header("Content-Type", "application/json")
         .header("X-Postmark-Server-Token", &server_token)
@@ -298,11 +304,17 @@ mod tests {
     use super::*;
 
     const ENV_TOKEN: &str = "POSTMARK_SERVER_TOKEN";
+    const ENV_TEST_API_URL: &str = "TEST_POSTMARK_API_URL";
 
     fn set_up() {
         let test_token = std::env::var(format!("TEST_{}", ENV_TOKEN))
             .expect("TEST_POSTMARK_SERVER_TOKEN must be set");
         unsafe { std::env::set_var(ENV_TOKEN, test_token) };
+
+        // Optionally set API URL for mock server testing
+        if let Ok(api_url) = std::env::var(ENV_TEST_API_URL) {
+            unsafe { std::env::set_var("POSTMARK_API_URL", api_url) };
+        }
     }
 
     #[test]

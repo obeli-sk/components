@@ -7,3 +7,13 @@ junit.path = "junit.xml"
 junit.report-name = "unit"
 junit.store-success-output = true
 junit.store-failure-output = true
+
+[profile.ci-e2e]
+failure-output = "immediate"
+fail-fast = false
+status-level = "all"
+slow-timeout = { period = "60s", terminate-after = 2 }
+junit.path = "junit-e2e.xml"
+junit.report-name = "e2e"
+junit.store-success-output = true
+junit.store-failure-output = true

@@ -1,3 +1,6 @@
 [build]
 target = "wasm32-wasip2"
 
+[target.wasm32-wasip2]
+runner = "wasmtime run -Scli -Shttp --env FLY_API_TOKEN --env TEST_FLY_API_TOKEN --env TEST_FLY_ORG"
+

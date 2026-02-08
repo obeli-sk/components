@@ -64,11 +64,18 @@ mod tests {
     use super::*;
     use generated::obelisk_components::openai_responses::types::{ResponseStatus, Role};
 
+    const ENV_TEST_BASE_URL: &str = "TEST_OPENAI_API_BASE_URL";
+
     fn set_up() {
         let test_token = std::env::var(format!("TEST_{ENV_OPENAI_API_KEY}")).unwrap_or_else(|_| {
             panic!("TEST_{ENV_OPENAI_API_KEY} must be set as an environment variable")
         });
         unsafe { std::env::set_var(ENV_OPENAI_API_KEY, test_token) };
+
+        // Optionally set base URL for mock server testing
+        if let Ok(base_url) = std::env::var(ENV_TEST_BASE_URL) {
+            unsafe { std::env::set_var("OPENAI_API_BASE_URL", base_url) };
+        }
     }
 
     #[test]

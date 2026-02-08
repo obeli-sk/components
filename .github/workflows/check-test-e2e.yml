@@ -1,0 +1,105 @@
+name: check-test-e2e
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "The ref (branch or SHA) to process"
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -xe {0}
+
+jobs:
+  e2e-mock-services:
+    name: E2E tests (mock services)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - uses: nixbuild/nix-quick-install-action@v33
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g
+
+      - name: Populate the nix store
+        run: nix develop --command echo
+
+      - name: Run OpenAI e2e tests
+        run: nix develop --command ./scripts/test-e2e.sh openai
+
+      - name: Run SendGrid e2e tests
+        run: nix develop --command ./scripts/test-e2e.sh sendgrid
+
+      - name: Run Postmark e2e tests
+        run: nix develop --command ./scripts/test-e2e.sh postmark
+
+      - name: Run HTTP e2e tests
+        run: nix develop --command ./scripts/test-e2e.sh http
+
+  e2e-github:
+    name: E2E tests (GitHub)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - uses: nixbuild/nix-quick-install-action@v33
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g
+
+      - name: Populate the nix store
+        run: nix develop --command echo
+
+      - name: Run GitHub e2e tests
+        env:
+          TEST_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_GITHUB_LOGIN: obeli-sk
+          TEST_GITHUB_REPO: https://github.com/obeli-sk/obelisk
+        run: nix develop --command ./scripts/test-e2e.sh github
+
+  e2e-fly:
+    name: E2E tests (Fly.io)
+    runs-on: ubuntu-24.04
+    # Only run on main branch or when secrets are available
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - uses: nixbuild/nix-quick-install-action@v33
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g
+
+      - name: Populate the nix store
+        run: nix develop --command echo
+
+      - name: Run Fly.io e2e tests
+        env:
+          TEST_FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: nix develop --command ./scripts/test-e2e.sh fly
