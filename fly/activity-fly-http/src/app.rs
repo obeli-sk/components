@@ -217,9 +217,6 @@ mod tests {
         let org_slug = get_test_org();
         let apps = block_on(list(org_slug)).expect("list should succeed");
         println!("Found {} apps", apps.len());
-        for app in apps.iter().take(5) {
-            println!("  - {} ({})", app.name, app.id);
-        }
     }
 
     #[test]
