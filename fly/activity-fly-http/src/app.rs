@@ -205,8 +205,9 @@ mod tests {
         unsafe { std::env::set_var(FLY_API_TOKEN, test_token) };
     }
 
-    fn get_test_org() -> String {
-        std::env::var(ENV_TEST_FLY_ORG).unwrap_or_else(|_| "personal".to_string())
+    fn get_test_org() -> OrgSlug {
+        let slug = std::env::var(ENV_TEST_FLY_ORG).unwrap_or_else(|_| "personal".to_string());
+        OrgSlug::new(slug).expect("invalid org slug")
     }
 
     #[test]
@@ -214,8 +215,7 @@ mod tests {
     fn list_apps_should_succeed() {
         set_up();
         let org_slug = get_test_org();
-        let result = crate::Component::list(org_slug);
-        let apps = result.expect("list should succeed");
+        let apps = block_on(list(org_slug)).expect("list should succeed");
         println!("Found {} apps", apps.len());
         for app in apps.iter().take(5) {
             println!("  - {} ({})", app.name, app.id);
@@ -226,8 +226,9 @@ mod tests {
     #[ignore]
     fn get_nonexistent_app_should_return_none() {
         set_up();
-        let result = crate::Component::get("nonexistent-app-12345-test".to_string());
-        let app = result.expect("get should succeed");
+        let app_name =
+            AppName::new("nonexistent-app-12345-test".to_string()).expect("invalid app name");
+        let app = block_on(get(app_name)).expect("get should succeed");
         assert!(app.is_none(), "nonexistent app should return None");
     }
 }
