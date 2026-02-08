@@ -1,0 +1,88 @@
+name: push-all-components
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The tag to be used when pushing components to the Docker Hub."
+        required: true
+        type: string
+      ref:
+        description: "The ref (branch or SHA) to process"
+        required: true
+        type: string
+        default: "main"
+
+defaults:
+  run:
+    shell: bash -xe {0}
+
+jobs:
+  push-all-components:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - uses: nixbuild/nix-quick-install-action@v34
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            extra-substituters = https://cache.garnix.io
+            extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g
+      - name: Populate the nix store
+        run: |
+          nix develop --command echo
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "$DOCKER_HUB_TOKEN" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push all components
+        run: |
+          for dir in $(find . -name "obelisk-local.toml" -type f -exec dirname {} \;); do
+            echo "Processing $dir"
+            pushd "$dir"
+            nix develop --command just build push $TAG
+            popd
+          done
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+
+      - name: Configure git before push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Generate Unique Branch Name
+        id: branch-name
+        run: echo "branch_name=bump-all-components-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Push obelisk-oci.toml
+        run: |
+          git checkout -b ${{ steps.branch-name.outputs.branch_name }}
+          git add .
+          git commit -m "chore: Push all components:${TAG}"
+          git push origin ${{ steps.branch-name.outputs.branch_name }}
+          OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          curl -v --fail -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$OWNER/$REPO/pulls" \
+            -d "$(jq -n \
+                  --arg title "chore: Push all components:$TAG" \
+                  --arg head "${{ steps.branch-name.outputs.branch_name }}" \
+                  --arg base "main" \
+                  --arg body "" \
+                  '{title: $title, head: $head, base: $base, body: $body}')"
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_PR_RW }}
