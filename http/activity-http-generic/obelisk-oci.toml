@@ -3,7 +3,7 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_http_generic"
-location.oci = "docker.io/getobelisk/components_http_activity_http_generic:2026-01-13@sha256:f64b64aa176224645a21d583312ad1e832afae57af138998711771c4411e3b3e"
+location.oci = "docker.io/getobelisk/components_http_activity_http_generic:2026-02-08@sha256:bfe61f1bbabd67c72086c62446b73b8da330972658dc4282b1e27df23f4624c0"
 forward_stdout = "stderr"
 forward_stderr = "stderr"
 exec.lock_expiry.seconds = 5
