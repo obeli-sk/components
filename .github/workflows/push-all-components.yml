@@ -47,12 +47,7 @@ jobs:
 
       - name: Build and push all components
         run: |
-          for dir in $(find . -name "obelisk-local.toml" -type f -exec dirname {} \;); do
-            echo "Processing $dir"
-            pushd "$dir"
-            nix develop --command just build push $TAG
-            popd
-          done
+          nix develop --command just all-build all-push $TAG
         env:
           TAG: ${{ github.event.inputs.tag }}
 

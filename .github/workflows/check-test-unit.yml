@@ -44,7 +44,7 @@ jobs:
       - name: Run unit tests
         env:
           CI: true
-        run: nix develop --command just test --profile ${{ github.job }}
+        run: nix develop --command just all-test --profile ${{ github.job }}
 
       - name: Upload test results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

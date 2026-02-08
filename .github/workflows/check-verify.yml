@@ -43,12 +43,12 @@ jobs:
 
       - name: just build
         run: |
-          nix develop --command just build
+          nix develop --command just all-build
 
       - name: just verify-local
         run: |
-          nix develop --command just verify-local
+          nix develop --command just all-verify-local
 
       - name: just verify-oci
         run: |
-          nix develop --command just verify-oci
+          nix develop --command just all-verify-oci
