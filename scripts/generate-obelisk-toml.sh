@@ -1,6 +1,6 @@
 #!/bin/bash
-# Generates obelisk-generate.toml by collecting all obelisk-oci.toml files,
-# commenting out their contents, and transforming the location format.
+# Generates obelisk-generate.toml by collecting all obelisk-oci.toml files
+# and commenting out their contents.
 #
 # Usage: ./scripts/generate-obelisk-toml.sh [output_file]
 # Default output: obelisk-generate.toml
@@ -36,8 +36,7 @@ for oci_file in "${OCI_FILES[@]}"; do
     
     # Process the file:
     # 1. Remove api.listening_addr and webui.listening_addr lines
-    # 2. Transform location.oci = "..." to location = "oci://..."
-    # 3. Prefix each line with "# " (including empty lines)
+    # 2. Prefix each line with "# " (including empty lines)
     first_content=""
     while IFS= read -r line || [[ -n "$line" ]]; do
         # Skip api.listening_addr and webui.listening_addr lines
@@ -50,11 +49,6 @@ for oci_file in "${OCI_FILES[@]}"; do
             continue
         fi
         first_content="seen"
-        
-        # Transform location.oci = "docker.io/..." to location = "oci://docker.io/..."
-        if [[ "$line" =~ ^location\.oci\ *=\ *\"(.*)\" ]]; then
-            line="location = \"oci://${BASH_REMATCH[1]}\""
-        fi
         
         # Comment out the line
         if [[ -z "$line" ]]; then
