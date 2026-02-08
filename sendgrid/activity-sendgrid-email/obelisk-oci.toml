@@ -2,8 +2,9 @@ api.listening_addr = "127.0.0.1:5005"
 webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
-name = "activity_http_generic"
+name = "activity_sendgrid_email"
 location.oci = "dryrun"
+exec.lock_expiry.seconds = 30
+env_vars = ["SENDGRID_API_KEY"]
 forward_stdout = "stderr"
 forward_stderr = "stderr"
-exec.lock_expiry.seconds = 5
