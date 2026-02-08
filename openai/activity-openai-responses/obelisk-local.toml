@@ -3,7 +3,7 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_openai_responses"
-location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release/activity_openai_responses.wasm"
+location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_openai_responses.wasm"
 exec.lock_expiry.seconds = 60
 env_vars = ["OPENAI_API_KEY"]
 forward_stdout = "stderr"

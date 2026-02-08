@@ -24,7 +24,7 @@ test *args:
 	cargo nextest run --workspace {{args}}
 
 run-all target:
-	set -e && find . -name Justfile -not -path "./Justfile" | while read -r jf; do \
+	set -e && find . -name obelisk-local.toml | while read -r jf; do \
 		dir=$(dirname "$jf"); \
 		echo "==> $dir ({{target}})"; \
 		(cd "$dir" && just "{{target}}"); \
