@@ -11,12 +11,18 @@ use crate::generated::obelisk_components::openai_responses::types::{
 use serde::{Deserialize, Serialize};
 use wstd::http::{Body, Client, HeaderValue, Request};
 
-const API_BASE: &str = "https://api.openai.com/v1";
+const DEFAULT_API_BASE: &str = "https://api.openai.com/v1";
+const ENV_OPENAI_API_KEY: &str = "OPENAI_API_KEY";
+const ENV_OPENAI_API_BASE_URL: &str = "OPENAI_API_BASE_URL";
 
 fn get_api_key() -> Result<String, ApiError> {
-    std::env::var("OPENAI_API_KEY").map_err(|_| {
-        ApiError::ConfigurationError("OPENAI_API_KEY environment variable not set".into())
+    std::env::var(ENV_OPENAI_API_KEY).map_err(|_| {
+        ApiError::ConfigurationError(format!("{} environment variable not set", ENV_OPENAI_API_KEY))
     })
+}
+
+fn get_api_base() -> String {
+    std::env::var(ENV_OPENAI_API_BASE_URL).unwrap_or_else(|_| DEFAULT_API_BASE.to_string())
 }
 
 fn request_error(msg: &str) -> ApiError {
@@ -331,7 +337,8 @@ fn convert_item_status(s: Option<&str>) -> ItemStatus {
 
 async fn do_request(method: &str, path: &str, body: Option<&str>) -> Result<Vec<u8>, ApiError> {
     let api_key = get_api_key()?;
-    let url = format!("{}{}", API_BASE, path);
+    let api_base = get_api_base();
+    let url = format!("{}{}", api_base, path);
 
     let req = match method {
         "GET" => Request::get(&url),

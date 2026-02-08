@@ -191,3 +191,43 @@ impl apps::Guest for crate::Component {
         .map_err(|err| err.to_string())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::FLY_API_TOKEN;
+
+    const ENV_TEST_FLY_ORG: &str = "TEST_FLY_ORG";
+
+    fn set_up() {
+        let test_token = std::env::var(format!("TEST_{FLY_API_TOKEN}"))
+            .expect("TEST_FLY_API_TOKEN must be set as an environment variable");
+        unsafe { std::env::set_var(FLY_API_TOKEN, test_token) };
+    }
+
+    fn get_test_org() -> String {
+        std::env::var(ENV_TEST_FLY_ORG).unwrap_or_else(|_| "personal".to_string())
+    }
+
+    #[test]
+    #[ignore]
+    fn list_apps_should_succeed() {
+        set_up();
+        let org_slug = get_test_org();
+        let result = crate::Component::list(org_slug);
+        let apps = result.expect("list should succeed");
+        println!("Found {} apps", apps.len());
+        for app in apps.iter().take(5) {
+            println!("  - {} ({})", app.name, app.id);
+        }
+    }
+
+    #[test]
+    #[ignore]
+    fn get_nonexistent_app_should_return_none() {
+        set_up();
+        let result = crate::Component::get("nonexistent-app-12345-test".to_string());
+        let app = result.expect("get should succeed");
+        assert!(app.is_none(), "nonexistent app should return None");
+    }
+}

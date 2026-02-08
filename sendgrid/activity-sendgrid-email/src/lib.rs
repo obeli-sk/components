@@ -19,8 +19,13 @@ mod generated {
 struct Component;
 export!(Component with_types_in generated);
 
-const SENDGRID_API_URL: &str = "https://api.sendgrid.com/v3/mail/send";
-const SENDGRID_API_KEY: &str = "SENDGRID_API_KEY";
+const DEFAULT_SENDGRID_API_URL: &str = "https://api.sendgrid.com/v3/mail/send";
+const ENV_SENDGRID_API_KEY: &str = "SENDGRID_API_KEY";
+const ENV_SENDGRID_API_URL: &str = "SENDGRID_API_URL";
+
+fn get_api_url() -> String {
+    std::env::var(ENV_SENDGRID_API_URL).unwrap_or_else(|_| DEFAULT_SENDGRID_API_URL.to_string())
+}
 
 /// SendGrid API request body structure
 #[derive(Serialize)]
@@ -120,10 +125,10 @@ impl From<&Personalization> for SendGridPersonalization {
 }
 
 fn get_api_key() -> Result<String, SendError> {
-    std::env::var(SENDGRID_API_KEY).map_err(|_| {
+    std::env::var(ENV_SENDGRID_API_KEY).map_err(|_| {
         SendError::ConfigurationError(format!(
             "Environment variable {} is not set",
-            SENDGRID_API_KEY
+            ENV_SENDGRID_API_KEY
         ))
     })
 }
@@ -133,7 +138,8 @@ async fn send_request(body: SendGridRequest) -> Result<SendResponse, SendError> 
     let json_body = serde_json::to_string(&body)
         .map_err(|e| SendError::ValidationError(format!("Failed to serialize request: {}", e)))?;
 
-    let req = Request::post(SENDGRID_API_URL)
+    let api_url = get_api_url();
+    let req = Request::post(&api_url)
         .header("Authorization", format!("Bearer {}", api_key))
         .header("Content-Type", "application/json")
         .body(Body::from(json_body))
@@ -292,11 +298,17 @@ mod tests {
     use super::*;
 
     const ENV_API_KEY: &str = "SENDGRID_API_KEY";
+    const ENV_TEST_API_URL: &str = "TEST_SENDGRID_API_URL";
 
     fn set_up() {
         let test_key = std::env::var(format!("TEST_{}", ENV_API_KEY))
             .expect("TEST_SENDGRID_API_KEY must be set");
         unsafe { std::env::set_var(ENV_API_KEY, test_key) };
+
+        // Optionally set API URL for mock server testing
+        if let Ok(api_url) = std::env::var(ENV_TEST_API_URL) {
+            unsafe { std::env::set_var("SENDGRID_API_URL", api_url) };
+        }
     }
 
     #[test]
