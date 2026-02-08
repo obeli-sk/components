@@ -17,7 +17,10 @@ const ENV_OPENAI_API_BASE_URL: &str = "OPENAI_API_BASE_URL";
 
 fn get_api_key() -> Result<String, ApiError> {
     std::env::var(ENV_OPENAI_API_KEY).map_err(|_| {
-        ApiError::ConfigurationError(format!("{} environment variable not set", ENV_OPENAI_API_KEY))
+        ApiError::ConfigurationError(format!(
+            "{} environment variable not set",
+            ENV_OPENAI_API_KEY
+        ))
     })
 }
 

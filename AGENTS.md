@@ -26,7 +26,7 @@ sudo systemctl restart nix-daemon.service
 ```bash
 cat << 'EOF' | sudo tee -a /etc/nix/nix.conf
 extra-substituters = https://cache.garnix.io
-extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g
+extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
 EOF
 sudo systemctl restart nix-daemon.service
 ```
