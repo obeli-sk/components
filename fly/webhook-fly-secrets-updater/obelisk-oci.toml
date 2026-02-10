@@ -3,12 +3,10 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[webhook_endpoint]]
 name = "webhook_fly_secrets_updater"
-location.oci = "docker.io/getobelisk/components_fly_webhook_fly_secrets_updater:2026-02-08@sha256:e957a9734d13d88861f0abc2a9901367895441c8651bfb6e36e9409dcdd5a06a"
+location = "oci://docker.io/getobelisk/components_fly_webhook_fly_secrets_updater:2026-02-08@sha256:e957a9734d13d88861f0abc2a9901367895441c8651bfb6e36e9409dcdd5a06a"
 http_server = "webhook_server"
 routes = [{ methods = ["POST"], route = "/" }]
 env_vars = ["FLY_API_TOKEN"]
-forward_stdout = "stderr"
-forward_stderr = "stderr"
 
 [[http_server]]
 name = "webhook_server"

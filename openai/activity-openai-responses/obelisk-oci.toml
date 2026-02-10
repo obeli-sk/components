@@ -3,8 +3,6 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_openai_responses"
-location.oci = "docker.io/getobelisk/components_openai_activity_openai_responses:2026-02-08@sha256:adb87fa3a8f8da5f7d12f203be685aa3ee4ef56a2b2683643da680c543562dea"
+location = "oci://docker.io/getobelisk/components_openai_activity_openai_responses:2026-02-08@sha256:adb87fa3a8f8da5f7d12f203be685aa3ee4ef56a2b2683643da680c543562dea"
 exec.lock_expiry.seconds = 60
 env_vars = ["OPENAI_API_KEY"]
-forward_stdout = "stderr"
-forward_stderr = "stderr"
