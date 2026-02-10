@@ -5,7 +5,5 @@ activities.directories.enabled = true
 
 [[activity_wasm]]
 name = "activity_docker"
-location.oci = "docker.io/getobelisk/components_docker_activity_docker:2026-02-08@sha256:39607793f16fb9d428bd6dfb91d5d2b310e710fbdf227fb2cf3725b546a64bf2"
-forward_stdout = "stderr"
-forward_stderr = "stderr"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker:2026-02-08@sha256:39607793f16fb9d428bd6dfb91d5d2b310e710fbdf227fb2cf3725b546a64bf2"
 directories  = { enabled = true, process_provider = "native"}

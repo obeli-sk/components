@@ -6,7 +6,5 @@ directories.enabled = true
 
 [[activity_wasm]]
 name = "activity_docker"
-location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_docker.wasm"
-forward_stdout = "stderr"
-forward_stderr = "stderr"
+location = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_docker.wasm"
 directories  = { enabled = true, process_provider = "native"}
