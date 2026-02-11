@@ -7,7 +7,7 @@ just build serve
 
 Issue a GET request:
 ```sh
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   .../http.request -- \
   '"get"' \
   '"https://httpbin.org/get"' \
@@ -17,7 +17,7 @@ obelisk client execution submit --follow \
 
 Issue a POST request:
 ```sh
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   .../http.request \
   -- \
   '"post"' \

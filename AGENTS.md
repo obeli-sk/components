@@ -316,7 +316,7 @@ obelisk server run --config ./obelisk-local.toml
 
 Submit an execution (in another terminal):
 ```bash
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   <package>:<interface>/<function-name> \
   -- '<json-param-1>' '<json-param-2>' ...
 ```

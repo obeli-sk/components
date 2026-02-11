@@ -145,7 +145,7 @@ obelisk server run --config ./obelisk-local.toml
 Submit executions from another terminal:
 
 ```bash
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   obelisk-components:openai-responses/api/create-simple \
   -- '{"model":"gpt-4o-mini","system_instructions":"You are helpful.","input":"Hello!"}'
 ```

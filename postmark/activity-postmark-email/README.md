@@ -39,7 +39,7 @@ Then submit executions using the CLI:
 ### Simple Email
 
 ```bash
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   obelisk-components:postmark-email/email.send-simple \
   -- '{
     "from_email": "sender@yourdomain.com",
@@ -56,7 +56,7 @@ obelisk client execution submit --follow \
 ### Full Email with Attachments
 
 ```bash
-obelisk client execution submit --follow \
+obelisk execution submit --follow \
   obelisk-components:postmark-email/email.send \
   -- '{
     "sender": { "email": "sender@yourdomain.com", "name": "Sender" },

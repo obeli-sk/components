@@ -18,7 +18,7 @@ push() {
     OCI_LOCATION="${PREFIX}${FILE_NAME_WITHOUT_EXT}:${TAG}"
     echo "Pushing ${RELATIVE_PATH} to ${OCI_LOCATION}..."
     if [ "$TAG" != "dryrun" ]; then
-        OUTPUT=$(obelisk client component push "$RELATIVE_PATH" "$OCI_LOCATION")
+        OUTPUT=$(obelisk component push "$RELATIVE_PATH" "$OCI_LOCATION")
     else
         OUTPUT="dryrun"
     fi

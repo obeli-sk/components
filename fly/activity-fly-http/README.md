@@ -35,19 +35,19 @@ Executions can be submitted and observed either using CLI or the WebUI at http:/
 
 List apps:
 ```sh
-obelisk client execution submit -f .../apps.list -- \
+obelisk execution submit -f .../apps.list -- \
 \"$FLY_ORG_SLUG\"
 ```
 
 Create an app:
 ```sh
-obelisk client execution submit -f .../apps.put -- \
+obelisk execution submit -f .../apps.put -- \
 \"$FLY_ORG_SLUG\" \"$FLY_APP_NAME\"
 ```
 
 Delete the app:
 ```sh
-obelisk client execution submit -f .../apps.delete -- \
+obelisk execution submit -f .../apps.delete -- \
 \"$FLY_APP_NAME\" true
 ```
 
@@ -55,23 +55,23 @@ obelisk client execution submit -f .../apps.delete -- \
 
 List IPs:
 ```sh
-obelisk client execution submit -f .../ips.list -- \
+obelisk execution submit -f .../ips.list -- \
 \"$FLY_APP_NAME\"
 ```
 Allocate an IP. Note that the previous expected list of IPs must be passed, as the underlying API is not idempotent.
 ```sh
 
-OLD_IPS=$(obelisk client execution submit -f --json .../ips.list -- \
+OLD_IPS=$(obelisk execution submit -f --json .../ips.list -- \
 \"$FLY_APP_NAME\" \
 | jq '.ok')
 
-IP=$(obelisk client execution submit -f --json .../ips.allocate -- \
+IP=$(obelisk execution submit -f --json .../ips.allocate -- \
 \"$FLY_APP_NAME\" '{ "ipv6": {"region": null} }' "$OLD_IPS" \
 | jq -r '.ok' )
 ```
 Release an IP:
 ```sh
-obelisk client execution submit -f .../ips.release -- \
+obelisk execution submit -f .../ips.release -- \
 \"$FLY_APP_NAME\" \"$IP\"
 ```
 
@@ -79,7 +79,7 @@ obelisk client execution submit -f .../ips.release -- \
 
 List secret keys of the app:
 ```sh
-obelisk client execution submit -f  .../secrets.list -- \
+obelisk execution submit -f  .../secrets.list -- \
 \"$FLY_APP_NAME\"
 ```
 
@@ -91,13 +91,13 @@ curl -v localhost:9090/ -X POST -d '{"app_name":"'$FLY_APP_NAME'","name":"foo","
 
 List volumes:
 ```sh
-obelisk client execution submit -f .../volumes.list -- \
+obelisk execution submit -f .../volumes.list -- \
 \"$FLY_APP_NAME\"
 ```
 
 Create a volume:
 ```sh
-export VOLUME_ID=$(obelisk client execution submit -f --json .../volumes.create -- \
+export VOLUME_ID=$(obelisk execution submit -f --json .../volumes.create -- \
 \"$FLY_APP_NAME\" '{
       "name": "my_app_vol",
       "region": "ams",
@@ -108,7 +108,7 @@ export VOLUME_ID=$(obelisk client execution submit -f --json .../volumes.create 
 
 Delete the volume:
 ```sh
-obelisk client execution submit -f .../volumes.delete -- \
+obelisk execution submit -f .../volumes.delete -- \
 \"$FLY_APP_NAME\" \"$VOLUME_ID\"
 unset VOLUME_ID
 ```
@@ -116,26 +116,26 @@ unset VOLUME_ID
 
 List VMs:
 ```sh
-obelisk client execution submit -f .../machines.list -- \
+obelisk execution submit -f .../machines.list -- \
 \"$FLY_APP_NAME\"
 ```
 
 Launch a VM:
 ```sh
-MACHINE_ID=$(obelisk client execution submit -f --json .../machines.create -- \
+MACHINE_ID=$(obelisk execution submit -f --json .../machines.create -- \
 \"$FLY_APP_NAME\" \"$FLY_MACHINE_NAME\" "$(./fly-http-machine-config.json.sh)" \"$FLY_REGION\" \
 | jq -r '.ok')
 ```
 
 Get the VM:
 ```sh
-obelisk client execution submit -f .../machines.get -- \
+obelisk execution submit -f .../machines.get -- \
 \"$FLY_APP_NAME\" \"$MACHINE_ID\"
 ```
 
 Exec:
 ```sh
-obelisk client execution submit -f .../machines.exec -- \
+obelisk execution submit -f .../machines.exec -- \
 \"$FLY_APP_NAME\" \"$MACHINE_ID\" \
 '["ls", "-la"]' \
 '{ "timeout-secs": 1 }'
@@ -143,6 +143,6 @@ obelisk client execution submit -f .../machines.exec -- \
 
 Delete the VM:
 ```sh
-obelisk client execution submit -f .../machines.delete -- \
+obelisk execution submit -f .../machines.delete -- \
 \"$FLY_APP_NAME\" \"$MACHINE_ID\" true
 ```

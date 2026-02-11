@@ -77,7 +77,7 @@ obelisk server run --config ./obelisk.toml
 Submit a simple request:
 
 ```sh
-obelisk client execution submit \
+obelisk execution submit \
     -f .../api.create-simple \
     -- '{"model": "gpt-4o-mini", "input": "Hello, world!"}'
 ```
