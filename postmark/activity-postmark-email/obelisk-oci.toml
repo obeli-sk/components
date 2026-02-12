@@ -3,6 +3,6 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_postmark_email"
-location = "oci://docker.io/getobelisk/components_postmark_activity_postmark_email:2026-02-08@sha256:a68b3b22d54fe58f099006801142f32707c2f6abc7f8414ee605986064f7708b"
+location = "oci://docker.io/getobelisk/components_postmark_activity_postmark_email:2026-02-12@sha256:d324877b02e2be8b0af788b6e0f4d3459596264acf06eebff5395686214b649b"
 exec.lock_expiry.seconds = 30
 env_vars = ["POSTMARK_SERVER_TOKEN"]

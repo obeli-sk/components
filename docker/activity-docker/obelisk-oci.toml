@@ -1,9 +1,10 @@
 api.listening_addr = "127.0.0.1:5005"
 webui.listening_addr = "127.0.0.1:8080"
 
-activities.directories.enabled = true
+[activities]
+directories.enabled = true
 
 [[activity_wasm]]
 name = "activity_docker"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker:2026-02-08@sha256:39607793f16fb9d428bd6dfb91d5d2b310e710fbdf227fb2cf3725b546a64bf2"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker:2026-02-12@sha256:f96011811edcefaaaa45c7599e80c7ffe0c7d80cea64a6c376b6b1853363d53c"
 directories  = { enabled = true, process_provider = "native"}

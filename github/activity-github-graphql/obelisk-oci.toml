@@ -3,6 +3,6 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_github_graphql"
-location = "oci://docker.io/getobelisk/components_github_activity_github_graphql:2026-02-08@sha256:21f61fa354e05a5df98278c7d7434c87d8eb0838f29814241f9a47a9f079006e"
+location = "oci://docker.io/getobelisk/components_github_activity_github_graphql:2026-02-12@sha256:5e98344f5aaf2c7ee759fbd4cd80784d9cb4aa3b90951c67a5a23f0d4ed38952"
 exec.lock_expiry.seconds = 5
 env_vars = ["GITHUB_TOKEN"]
