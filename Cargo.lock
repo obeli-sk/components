@@ -11,8 +11,8 @@ dependencies = [
  "serde",
  "serde_json",
  "wasip2",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wstd",
 ]
 
@@ -28,8 +28,8 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wstd",
 ]
 
@@ -42,8 +42,8 @@ dependencies = [
  "cynic-codegen",
  "serde",
  "serde_json",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wit-parser 0.245.1",
  "wstd",
 ]
@@ -53,8 +53,8 @@ name = "activity-http-generic"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wit-parser 0.245.1",
  "wstd",
 ]
@@ -67,8 +67,8 @@ dependencies = [
  "serde",
  "serde_json",
  "ulid",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wit-parser 0.245.1",
  "wstd",
 ]
@@ -80,8 +80,8 @@ dependencies = [
  "anyhow",
  "serde",
  "serde_json",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wstd",
 ]
 
@@ -92,8 +92,8 @@ dependencies = [
  "anyhow",
  "serde",
  "serde_json",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wit-parser 0.245.1",
  "wstd",
 ]
@@ -105,8 +105,8 @@ dependencies = [
  "anyhow",
  "serde",
  "serde_json",
- "wit-bindgen 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen 0.54.0",
+ "wit-bindgen-rust 0.54.0",
  "wit-parser 0.245.1",
  "wstd",
 ]
@@ -555,9 +555,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.17"
+version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92ecc6618181def0457392ccd0ee51198e065e016d1d527a7ac1b6dc7c1f09d2"
+checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "js-sys"
@@ -1297,12 +1297,12 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen"
-version = "0.53.1"
+version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e915216dde3e818093168df8380a64fba25df468d626c80dd5d6a184c87e7c7"
+checksum = "2bb00254d5051d69730ee32580b7373592f10ad786757c372f0f2c7b61f86a2c"
 dependencies = [
  "bitflags",
- "wit-bindgen-rust-macro 0.53.1",
+ "wit-bindgen-rust-macro 0.54.0",
 ]
 
 [[package]]
@@ -1318,9 +1318,9 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-core"
-version = "0.53.1"
+version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3deda4b7e9f522d994906f6e6e0fc67965ea8660306940a776b76732be8f3933"
+checksum = "99cdef5ccf0b0e9bf30868d6f9c5ed116c84ae95f84ba29d2216d3e922de3963"
 dependencies = [
  "anyhow",
  "heck 0.5.0",
@@ -1345,9 +1345,9 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-rust"
-version = "0.53.1"
+version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "863a7ab3c4dfee58db196811caeb0718b88412a0aef3d1c2b02fcbae1e37c688"
+checksum = "e76541e2f37ac1729db85765729daa0f3c2b5975d66699114d107525f6d6c8d5"
 dependencies = [
  "anyhow",
  "heck 0.5.0",
@@ -1355,7 +1355,7 @@ dependencies = [
  "prettyplease",
  "syn",
  "wasm-metadata 0.245.1",
- "wit-bindgen-core 0.53.1",
+ "wit-bindgen-core 0.54.0",
  "wit-component 0.245.1",
 ]
 
@@ -1376,17 +1376,17 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-rust-macro"
-version = "0.53.1"
+version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d14f3a9bfa3804bb0e9ab7f66da047f210eded6a1297ae3ba5805b384d64797f"
+checksum = "a284e17b2bc808c72ba008f6694626fa76bcac608b3d1ed0880f9add3f558f8e"
 dependencies = [
  "anyhow",
  "prettyplease",
  "proc-macro2",
  "quote",
  "syn",
- "wit-bindgen-core 0.53.1",
- "wit-bindgen-rust 0.53.1",
+ "wit-bindgen-core 0.54.0",
+ "wit-bindgen-rust 0.54.0",
 ]
 
 [[package]]
@@ -1504,18 +1504,18 @@ checksum = "cfe53a6657fd280eaa890a3bc59152892ffa3e30101319d168b781ed6529b049"
 
 [[package]]
 name = "zerocopy"
-version = "0.8.42"
+version = "0.8.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2578b716f8a7a858b7f02d5bd870c14bf4ddbbcf3a4c05414ba6503640505e3"
+checksum = "efbb2a062be311f2ba113ce66f697a4dc589f85e78a4aea276200804cea0ed87"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.42"
+version = "0.8.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e6cc098ea4d3bd6246687de65af3f920c430e236bee1e3bf2e441463f08a02f"
+checksum = "0e8bc7269b54418e7aeeef514aa68f8690b8c0489a06b0136e5f57c4c5ccab89"
 dependencies = [
  "proc-macro2",
  "quote",
