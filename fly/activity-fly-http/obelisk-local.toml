@@ -4,7 +4,7 @@ location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activi
 exec.lock_expiry.seconds = 15
 [[activity_wasm.allowed_host]]
 pattern = "https://api.machines.dev"
-methods = ["POST"]
+methods = "*"
 [activity_wasm.allowed_host.secrets]
 env_vars = ["FLY_API_TOKEN"]
 replace_in = ["headers"]

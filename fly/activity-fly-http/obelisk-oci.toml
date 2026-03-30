@@ -4,7 +4,7 @@ location = "oci://docker.io/getobelisk/components_fly_activity_fly_http:2026-03-
 exec.lock_expiry.seconds = 15
 [[activity_wasm.allowed_host]]
 pattern = "https://api.machines.dev"
-methods = ["POST"]
+methods = "*"
 [activity_wasm.allowed_host.secrets]
 env_vars = ["FLY_API_TOKEN"]
 replace_in = ["headers"]
