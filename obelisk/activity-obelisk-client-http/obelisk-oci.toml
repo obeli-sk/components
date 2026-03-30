@@ -1,7 +1,6 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_obelisk_client_http"
 location = "oci://docker.io/getobelisk/components_obelisk_activity_obelisk_client_http:2026-02-12@sha256:58cc104fccf456dc41151a250cbb9a031308e9dcd63210510fba4022e52a6951"
-
+[[activity_wasm.allowed_host]]
+pattern = "*"
+methods = ["GET", "POST"]

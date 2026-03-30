@@ -1,13 +1,10 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
-[[webhook_endpoint]]
+[[webhook_endpoint_wasm]]
 name = "webhook_fly_secrets_updater"
-location = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_webhook/webhook_fly_secrets_updater.wasm"
-http_server = "webhook_server"
+location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_webhook/webhook_fly_secrets_updater.wasm"
 routes = [{ methods = ["POST"], route = "/" }]
+[[webhook_endpoint_wasm.allowed_host]]
+pattern = "https://api.machines.dev"
+methods = ["POST"]
+[webhook_endpoint_wasm.allowed_host.secrets]
 env_vars = ["FLY_API_TOKEN"]
-
-[[http_server]]
-name = "webhook_server"
-listening_addr = "0.0.0.0:9090"
+replace_in = ["headers"]

@@ -1,8 +1,10 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_fly_http"
 location = "oci://docker.io/getobelisk/components_fly_activity_fly_http:2026-02-12@sha256:9cbf7b4b2ef668367272ede4f8454d198c16741d21e71bd308b4be69c8a5ba92"
 exec.lock_expiry.seconds = 15
+[[activity_wasm.allowed_host]]
+pattern = "https://api.machines.dev"
+methods = ["POST"]
+[activity_wasm.allowed_host.secrets]
 env_vars = ["FLY_API_TOKEN"]
+replace_in = ["headers"]
