@@ -1,8 +1,10 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_github_graphql"
-location = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_github_graphql.wasm"
+location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_github_graphql.wasm"
 exec.lock_expiry.seconds = 5
+[[activity_wasm.allowed_host]]
+pattern = "https://api.github.com"
+methods = ["POST"]
+[activity_wasm.allowed_host.secrets]
 env_vars = ["GITHUB_TOKEN"]
+replace_in = ["headers"]

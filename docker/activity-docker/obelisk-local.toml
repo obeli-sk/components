@@ -1,10 +1,4 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
-[activities]
-directories.enabled = true
-
 [[activity_wasm]]
 name = "activity_docker"
-location = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release_activity/activity_docker.wasm"
+location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_docker.wasm"
 directories  = { enabled = true, process_provider = "native"}

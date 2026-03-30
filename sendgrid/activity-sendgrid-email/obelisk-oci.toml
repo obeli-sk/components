@@ -1,8 +1,11 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_sendgrid_email"
 location = "oci://docker.io/getobelisk/components_sendgrid_activity_sendgrid_email:2026-02-12@sha256:1e37850228a283ab3e7ac4368180743506efac5c05ce559d1ad5d14f27cbb3f0"
 exec.lock_expiry.seconds = 30
+env_vars = [{key="SENDGRID_API_URL", value="${SENDGRID_API_URL:-https://api.sendgrid.com/v3/mail/send}"}]
+[[activity_wasm.allowed_host]]
+pattern = "${SENDGRID_API_DOMAIN:-api.sendgrid.com}"
+methods = ["POST"]
+[activity_wasm.allowed_host.secrets]
 env_vars = ["SENDGRID_API_KEY"]
+replace_in = ["headers"]

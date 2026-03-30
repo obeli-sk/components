@@ -5,10 +5,10 @@ serve:
 	obelisk server run --config obelisk-local.toml
 
 verify-local:
-	obelisk server verify --ignore-missing-env-vars -c obelisk-local.toml
+	obelisk server verify --ignore-missing-env-vars --deployment obelisk-local.toml
 
 verify-oci:
-	obelisk server verify --ignore-missing-env-vars -c obelisk-oci.toml
+	obelisk server verify --ignore-missing-env-vars --deployment obelisk-oci.toml
 
 push tag:
 	(../../scripts/push-components.sh {{ tag }})

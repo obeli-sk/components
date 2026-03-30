@@ -1,8 +1,11 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_openai_responses"
 location = "oci://docker.io/getobelisk/components_openai_activity_openai_responses:2026-02-12@sha256:e144a5a38a92559fe2af08032da88c7992298c89f6e8aab1e45c04798c000974"
 exec.lock_expiry.seconds = 60
+env_vars = [{key="OPENAI_API_BASE_URL", value="${OPENAI_API_BASE_URL:-https://api.openai.com/v1}"}]
+[[activity_wasm.allowed_host]]
+pattern = "${OPENAI_API_DOMAIN:-api.openai.com}"
+methods = ["POST", "GET", "DELETE"]
+[activity_wasm.allowed_host.secrets]
 env_vars = ["OPENAI_API_KEY"]
+replace_in = ["headers"]

@@ -1,8 +1,11 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
 [[activity_wasm]]
 name = "activity_postmark_email"
 location = "oci://docker.io/getobelisk/components_postmark_activity_postmark_email:2026-02-12@sha256:d324877b02e2be8b0af788b6e0f4d3459596264acf06eebff5395686214b649b"
 exec.lock_expiry.seconds = 30
+env_vars = [{key="POSTMARK_API_URL", value="${POSTMARK_API_URL:-https://api.postmarkapp.com/email}"}]
+[[activity_wasm.allowed_host]]
+pattern = "${POSTMARK_API_DOMAIN:-api.postmarkapp.com}"
+methods = ["POST"]
+[activity_wasm.allowed_host.secrets]
 env_vars = ["POSTMARK_SERVER_TOKEN"]
+replace_in = ["headers"]

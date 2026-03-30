@@ -1,13 +1,10 @@
-api.listening_addr = "127.0.0.1:5005"
-webui.listening_addr = "127.0.0.1:8080"
-
-[[webhook_endpoint]]
+[[webhook_endpoint_wasm]]
 name = "webhook_fly_secrets_updater"
 location = "oci://docker.io/getobelisk/components_fly_webhook_fly_secrets_updater:2026-02-12@sha256:63af69f3fc58b7db09b8bad5073b53fac4c78a9366fb006eced361c55f78316d"
-http_server = "webhook_server"
 routes = [{ methods = ["POST"], route = "/" }]
+[[webhook_endpoint_wasm.allowed_host]]
+pattern = "https://api.machines.dev"
+methods = ["POST"]
+[webhook_endpoint_wasm.allowed_host.secrets]
 env_vars = ["FLY_API_TOKEN"]
-
-[[http_server]]
-name = "webhook_server"
-listening_addr = "0.0.0.0:9090"
+replace_in = ["headers"]
