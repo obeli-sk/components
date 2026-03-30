@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_fly_http"
-location = "oci://docker.io/getobelisk/components_fly_activity_fly_http:2026-02-12@sha256:9cbf7b4b2ef668367272ede4f8454d198c16741d21e71bd308b4be69c8a5ba92"
+location = "oci://docker.io/getobelisk/components_fly_activity_fly_http:2026-03-30@sha256:fef07531120e10a8e59edbb4927dcfffae68aed6925d76ea43c8e02e30584161"
 exec.lock_expiry.seconds = 15
 [[activity_wasm.allowed_host]]
 pattern = "https://api.machines.dev"

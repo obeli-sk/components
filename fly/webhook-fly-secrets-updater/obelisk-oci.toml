@@ -1,6 +1,6 @@
 [[webhook_endpoint_wasm]]
 name = "webhook_fly_secrets_updater"
-location = "oci://docker.io/getobelisk/components_fly_webhook_fly_secrets_updater:2026-02-12@sha256:63af69f3fc58b7db09b8bad5073b53fac4c78a9366fb006eced361c55f78316d"
+location = "oci://docker.io/getobelisk/components_fly_webhook_fly_secrets_updater:2026-03-30@sha256:6c3c8aaa0d40099530f7bf4cb0aeeef7206e2ae8e4a9dc4d8520d3e5a5f72fe4"
 routes = [{ methods = ["POST"], route = "/" }]
 [[webhook_endpoint_wasm.allowed_host]]
 pattern = "https://api.machines.dev"

@@ -1,4 +1,4 @@
 [[activity_wasm]]
 name = "activity_docker"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker:2026-02-12@sha256:f96011811edcefaaaa45c7599e80c7ffe0c7d80cea64a6c376b6b1853363d53c"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker:2026-03-30@sha256:9b9297f4ea1718919da861b60d2221a83ed6317686d777e4a1a71625a2fc4611"
 directories  = { enabled = true, process_provider = "native"}
