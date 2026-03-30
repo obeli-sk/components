@@ -12,14 +12,14 @@ TAG="$1"
 
 SOURCE_TOML_FILE="obelisk-local.toml"
 TARGET_TOML_FILE="obelisk-oci.toml"
-# Determine COMPONENT_TYPE from the current directory name prefix
+# Determine $TOML_COMPONENT_TYPE from the current directory name prefix
 DIR_NAME=$(basename "$PWD")
 if [[ "$DIR_NAME" == activity-* ]]; then
-    COMPONENT_TYPE="activity_wasm"
+    TOML_COMPONENT_TYPE="activity_wasm"
 elif [[ "$DIR_NAME" == webhook-* ]]; then
-    COMPONENT_TYPE="webhook_endpoint"
+    TOML_COMPONENT_TYPE="webhook_endpoint_wasm"
 elif [[ "$DIR_NAME" == workflow-* ]]; then
-    COMPONENT_TYPE="workflow"
+    TOML_COMPONENT_TYPE="workflow_wasm"
 else
     echo "Error: directory '${DIR_NAME}' does not start with a known prefix (activity-, webhook-, workflow-)" >&2
     exit 1
@@ -36,7 +36,7 @@ push() {
         OUTPUT="dryrun"
     fi
     # Replace the old location with the actual OCI location
-    obelisk component add ${COMPONENT_TYPE} ${OUTPUT} --name ${FILE_NAME_WITHOUT_EXT} -c $TARGET_TOML_FILE
+    obelisk component add ${TOML_COMPONENT_TYPE} ${OUTPUT} --name ${FILE_NAME_WITHOUT_EXT} -c $TARGET_TOML_FILE
 }
 
 cp "$SOURCE_TOML_FILE" "$TARGET_TOML_FILE"
@@ -49,8 +49,8 @@ while IFS= read -r line; do
   raw_path=${line#*\"}
   raw_path=${raw_path%\"*}
 
-  # interpolate ${OBELISK_TOML_DIR}
-  path=${raw_path//\$\{OBELISK_TOML_DIR\}/$OBELISK_TOML_DIR_VALUE}
+  # interpolate ${DEPLOYMENT_DIR}
+  path=${raw_path//\$\{DEPLOYMENT_DIR\}/$OBELISK_TOML_DIR_VALUE}
 
   push $path
 
