@@ -36,7 +36,7 @@ push() {
         OUTPUT="dryrun"
     fi
     # Replace the old location with the actual OCI location
-    obelisk component add ${TOML_COMPONENT_TYPE} ${OUTPUT} --name ${FILE_NAME_WITHOUT_EXT} -c $TARGET_TOML_FILE
+    obelisk component add --name ${FILE_NAME_WITHOUT_EXT} --deployment ${TARGET_TOML_FILE} ${TOML_COMPONENT_TYPE} ${OUTPUT} 
 }
 
 cp "$SOURCE_TOML_FILE" "$TARGET_TOML_FILE"
