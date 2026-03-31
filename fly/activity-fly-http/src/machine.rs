@@ -477,6 +477,11 @@ mod tests {
     "instance_id": "01KN183BZYXG5QCDBEPMFHE84Y",
     "private_ip": "fdaa:0:fcc8:a7b:624:3e5c:9e8d:2",
     "config": {
+        "env": {
+            "OBELISK__API__LISTENING_ADDR": "",
+            "OBELISK__EXTERNAL__LISTENING_ADDR": "",
+            "OBELISK__WEBUI__LISTENING_ADDR": ""
+        },
         "init": {
             "entrypoint": [
                 "/usr/bin/env",

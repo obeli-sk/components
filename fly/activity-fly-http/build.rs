@@ -18,6 +18,13 @@ fn main() -> Result<()> {
     let contents = re
         .replace_all(&contents, "#[serde(rename_all = \"kebab-case\")]\n$1")
         .into_owned();
+    let re_env = regex::Regex::new(r"(pub env: Option<_rt::Vec)").unwrap();
+    let contents = re_env
+        .replace(
+            &contents,
+            "#[serde(deserialize_with = \"crate::env_serde::deserialize\", default)]\n    $1",
+        )
+        .into_owned();
     std::fs::write(&path, contents)?;
 
     Ok(())

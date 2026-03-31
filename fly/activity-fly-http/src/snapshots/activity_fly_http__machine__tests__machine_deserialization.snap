@@ -38,7 +38,22 @@ Machine {
                 tty: None,
             },
         ),
-        env: None,
+        env: Some(
+            [
+                (
+                    "OBELISK__API__LISTENING_ADDR",
+                    "",
+                ),
+                (
+                    "OBELISK__EXTERNAL__LISTENING_ADDR",
+                    "",
+                ),
+                (
+                    "OBELISK__WEBUI__LISTENING_ADDR",
+                    "",
+                ),
+            ],
+        ),
         restart: Some(
             MachineRestart {
                 max-retries: Some(
