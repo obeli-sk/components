@@ -19,16 +19,16 @@ pub(crate) mod env_serde {
 
     pub fn deserialize<'de, D>(
         deserializer: D,
-    ) -> Result<Option<Vec<(String, String)>>, D::Error>
+    ) -> Result<Option<Vec<(String, Option<String>)>>, D::Error>
     where
         D: Deserializer<'de>,
     {
-        let map: Option<BTreeMap<String, String>> = Option::deserialize(deserializer)?;
+        let map: Option<BTreeMap<String, Option<String>>> = Option::deserialize(deserializer)?;
         Ok(map.map(|m| m.into_iter().collect()))
     }
 
     pub fn serialize<S>(
-        value: &Option<Vec<(String, String)>>,
+        value: &Option<Vec<(String, Option<String>)>>,
         serializer: S,
     ) -> Result<S::Ok, S::Error>
     where
@@ -37,8 +37,10 @@ pub(crate) mod env_serde {
         match value {
             None => serializer.serialize_none(),
             Some(pairs) => {
-                let map: BTreeMap<&str, &str> =
-                    pairs.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+                let map: BTreeMap<&str, Option<&str>> = pairs
+                    .iter()
+                    .map(|(k, v)| (k.as_str(), v.as_deref()))
+                    .collect();
                 map.serialize(serializer)
             }
         }
@@ -472,7 +474,7 @@ mod tests {
         "env": {
             "OBELISK__API__LISTENING_ADDR": "",
             "OBELISK__EXTERNAL__LISTENING_ADDR": "",
-            "OBELISK__WEBUI__LISTENING_ADDR": ""
+            "OBELISK__WEBUI__LISTENING_ADDR": null
         },
         "init": {
             "entrypoint": [

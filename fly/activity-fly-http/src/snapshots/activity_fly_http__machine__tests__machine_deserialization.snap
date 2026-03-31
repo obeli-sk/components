@@ -42,15 +42,19 @@ Machine {
             [
                 (
                     "OBELISK__API__LISTENING_ADDR",
-                    "",
+                    Some(
+                        "",
+                    ),
                 ),
                 (
                     "OBELISK__EXTERNAL__LISTENING_ADDR",
-                    "",
+                    Some(
+                        "",
+                    ),
                 ),
                 (
                     "OBELISK__WEBUI__LISTENING_ADDR",
-                    "",
+                    None,
                 ),
             ],
         ),
