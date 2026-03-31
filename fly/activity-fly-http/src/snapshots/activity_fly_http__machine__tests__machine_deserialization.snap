@@ -4,7 +4,7 @@ expression: machine
 ---
 Machine {
     config: MachineConfig {
-        image: "getobelisk/obelisk:0.24.1-ubuntu",
+        image: "getobelisk/obelisk:0.36.1-ubuntu-litestream",
         guest: Some(
             GuestConfig {
                 cpu-kind: Some(
@@ -23,7 +23,13 @@ Machine {
         init: Some(
             InitConfig {
                 cmd: None,
-                entrypoint: None,
+                entrypoint: Some(
+                    [
+                        "/usr/bin/env",
+                        "bash",
+                        "/usr/local/bin/litestream-entrypoint.sh",
+                    ],
+                ),
                 exec: None,
                 kernel-args: None,
                 swap-size-mb: Some(
@@ -32,24 +38,118 @@ Machine {
                 tty: None,
             },
         ),
-        env: None,
+        env: Some(
+            [
+                (
+                    "OBELISK__API__LISTENING_ADDR",
+                    Some(
+                        "",
+                    ),
+                ),
+                (
+                    "OBELISK__EXTERNAL__LISTENING_ADDR",
+                    Some(
+                        "",
+                    ),
+                ),
+                (
+                    "OBELISK__WEBUI__LISTENING_ADDR",
+                    None,
+                ),
+            ],
+        ),
         restart: Some(
             MachineRestart {
-                max-retries: None,
+                max-retries: Some(
+                    5,
+                ),
                 policy: RestartPolicy::OnFailure,
             },
         ),
         stop-config: None,
-        mounts: None,
-        services: None,
-        files: None,
+        mounts: Some(
+            [
+                Mount {
+                    volume: "vol_rk19ee7jnp5dmpk4",
+                    path: "/volume",
+                },
+            ],
+        ),
+        services: Some(
+            [
+                ServiceConfig {
+                    internal-port: 9091,
+                    protocol: ServiceProtocol::Tcp,
+                    ports: [
+                        PortConfig {
+                            port: 444,
+                            handlers: [
+                                PortHandler::Tls,
+                            ],
+                        },
+                    ],
+                },
+                ServiceConfig {
+                    internal-port: 9090,
+                    protocol: ServiceProtocol::Tcp,
+                    ports: [
+                        PortConfig {
+                            port: 443,
+                            handlers: [
+                                PortHandler::Tls,
+                            ],
+                        },
+                    ],
+                },
+            ],
+        ),
+        files: Some(
+            [
+                FileConfig {
+                    guest-path: "/etc/obelisk/obelisk.toml",
+                    image-config: None,
+                    mode: None,
+                    raw-value: Some(
+                        "W1thY3Rpdml0eV93YXNtXV0KZW52X3ZhcnMgPSBbIkZMWV9BUElfVE9LRU4iXQpsb2NhdGlvbiA9ICJvY2k6Ly9kb2NrZXIuaW8vZ2V0b2JlbGlzay9jb21wb25lbnRzX2ZseV9hY3Rpdml0eV9mbHlfaHR0cDoyMDI2LTAzLTMwQHNoYTI1NjpmZWYwNzUzMTEyMGUxMGE4ZTU5ZWRiYjQ5MjdkY2ZmZmFlNjhhZWQ2OTI1ZDc2ZWE0M2M4ZTAyZTMwNTg0MTYxIgptYXhfcmV0cmllcyA9IDYKbmFtZSA9ICJhY3Rpdml0eV9mbHlfaHR0cCIKCltbYWN0aXZpdHlfd2FzbS5hbGxvd2VkX2hvc3RdXQptZXRob2RzID0gIioiCnBhdHRlcm4gPSAiKjovLyo6KiIKClthY3Rpdml0eV93YXNtLmV4ZWMubG9ja19leHBpcnldCnNlY29uZHMgPSAxNQoKW1thY3Rpdml0eV93YXNtXV0KbG9jYXRpb24gPSAib2NpOi8vZG9ja2VyLmlvL2dldG9iZWxpc2svY29tcG9uZW50c19odHRwX2FjdGl2aXR5X2h0dHBfZ2VuZXJpYzoyMDI2LTAzLTMwQHNoYTI1NjpkMTcwMDkyZjMwMjMzODA5NjBjNDU5YmI5MmQ3MWI2YTBhYzhjOGQzZjE2Y2NiODYzZWVkNzJlNjljZjcxNTdkIgpuYW1lID0gImFjdGl2aXR5X2h0dHBfZ2VuZXJpYyIKCltbYWN0aXZpdHlfd2FzbS5hbGxvd2VkX2hvc3RdXQptZXRob2RzID0gIioiCnBhdHRlcm4gPSAiKjovLyo6KiIKClthY3Rpdml0eV93YXNtLmV4ZWMubG9ja19leHBpcnldCnNlY29uZHMgPSA1CgpbW2FjdGl2aXR5X3dhc21dXQpsb2NhdGlvbiA9ICJvY2k6Ly9kb2NrZXIuaW8vZ2V0b2JlbGlzay9jb21wb25lbnRzX29iZWxpc2tfYWN0aXZpdHlfb2JlbGlza19jbGllbnRfaHR0cDoyMDI2LTAzLTMwQHNoYTI1NjpmNWZhMjgyYmI2OTQxYjM1MjBjOWFjOThhOTQ5ZjBjMTQzOGViM2Y3MjgzNjk4NTgxNjViYmE0YTkxYThkZDRjIgpuYW1lID0gImFjdGl2aXR5X29iZWxpc2tfY2xpZW50IgoKW1thY3Rpdml0eV93YXNtLmFsbG93ZWRfaG9zdF1dCm1ldGhvZHMgPSAiKiIKcGF0dGVybiA9ICIqOi8vKjoqIgoKW1t3ZWJob29rX2VuZHBvaW50X3dhc21dXQpodHRwX3NlcnZlciA9ICJoZWFsdGhjaGVja19zZXJ2ZXIiCmxvY2F0aW9uID0gIm9jaTovL2RvY2tlci5pby9nZXRvYmVsaXNrL2NvbXBvbmVudHNfZmx5aW9fd2ViaG9va19oZWFsdGhjaGVjazoyMDI2LTAzLTMwQHNoYTI1NjphODExOTljN2RmNGQyODI3MjVlZDU3ZjBkMjBmNDIxNGE2NGRjMDRhYTgzMjA5MTFjZGExNzQ4ZGNmZGU2OGY4IgpuYW1lID0gIndlYmhvb2tfaGVhbHRoY2hlY2siCnJvdXRlcyA9IFsiIl0KCltbd29ya2Zsb3dfd2FzbV1dCmxvY2F0aW9uID0gIm9jaTovL2RvY2tlci5pby9nZXRvYmVsaXNrL2NvbXBvbmVudHNfZmx5aW9fb2JlbGlza19kZXBsb3llcl9mbHlpbzoyMDI2LTAzLTMwQHNoYTI1NjowN2I1ZjI0OTJhM2Y0MWEzNmZiZTc0Y2RhODAxYTdhMGMyOTFhOTg2Zjk5ZDBjMWQwODY2YzQzYmY4OWQ3YWEyIgpuYW1lID0gIm9iZWxpc2tfZGVwbG95ZXJfZmx5aW8iCg==",
+                    ),
+                    secret-name: None,
+                },
+                FileConfig {
+                    guest-path: "/etc/obelisk/server.toml",
+                    image-config: None,
+                    mode: None,
+                    raw-value: Some(
+                        "W2FwaV0KbGlzdGVuaW5nX2FkZHIgPSAiWzo6XTo1MDA1IgoKW2RhdGFiYXNlLnNxbGl0ZV0KZGlyZWN0b3J5ID0gIi92b2x1bWUvb2JlbGlzay1zcWxpdGUiCgpbZGF0YWJhc2Uuc3FsaXRlLnByYWdtYV0KY2FjaGVfc2l6ZSA9ICIzMDAwIgoKW1todHRwX3NlcnZlcl1dCmxpc3RlbmluZ19hZGRyID0gIjAuMC4wLjA6OTA5MSIKbmFtZSA9ICJoZWFsdGhjaGVja19zZXJ2ZXIiCgpbbG9nLmZpbGVdCmRpcmVjdG9yeSA9ICIvdmFyL2xvZyIKZW5hYmxlZCA9IHRydWUKcHJlZml4ID0gIm9iZWxpc2subG9nIgp0YXJnZXQgPSB0cnVlCgpbd2FzbV0KY2FjaGVfZGlyZWN0b3J5ID0gIi92b2x1bWUvd2FzbSIKcGFyYWxsZWxfY29tcGlsYXRpb24gPSBmYWxzZQoKW3dhc20uY29kZWdlbl9jYWNoZV0KZGlyZWN0b3J5ID0gIi92b2x1bWUvY29kZWdlbiIKClt3ZWJ1aV0KbGlzdGVuaW5nX2FkZHIgPSAiWzo6XTo4MDgwIgo=",
+                    ),
+                    secret-name: None,
+                },
+                FileConfig {
+                    guest-path: "/usr/local/bin/litestream-entrypoint.sh",
+                    image-config: None,
+                    mode: None,
+                    raw-value: Some(
+                        "CiMhL3Vzci9iaW4vZW52IGJhc2gKCnNldCAtZXVvIHBpcGVmYWlsCgpsaXRlc3RyZWFtIHJlc3RvcmUgLWlmLXJlcGxpY2EtZXhpc3RzIC0tY29uZmlnIC9ldGMvbGl0ZXN0cmVhbS55bWwgL3ZvbHVtZS9vYmVsaXNrLXNxbGl0ZS9vYmVsaXNrLnNxbGl0ZQpleGVjIGxpdGVzdHJlYW0gcmVwbGljYXRlIC0tY29uZmlnIC9ldGMvbGl0ZXN0cmVhbS55bWwgLS1leGVjICdvYmVsaXNrIHNlcnZlciBydW4gLS1zZXJ2ZXItY29uZmlnIC9ldGMvb2JlbGlzay9zZXJ2ZXIudG9tbCAtLWRlcGxveW1lbnQgL2V0Yy9vYmVsaXNrL29iZWxpc2sudG9tbCcKICAgICAgICA=",
+                    ),
+                    secret-name: None,
+                },
+                FileConfig {
+                    guest-path: "/etc/litestream.yml",
+                    image-config: None,
+                    mode: None,
+                    raw-value: Some(
+                        "CmRiczoKICAtIHBhdGg6ICIvdm9sdW1lL29iZWxpc2stc3FsaXRlL29iZWxpc2suc3FsaXRlIgogICAgcmVwbGljYToKICAgICAgdXJsOiAiczM6Ly9saXRlc3RyZWFtLWJ1Y2tldC40OGU2NWVkZjc1OTQzOC52bS5pdHNlbGYuaW50ZXJuYWw6OTAwMC9saXRlc3RyZWFtL29iZWxpc2siCiAgICAgIGFjY2Vzcy1rZXktaWQ6ICJtaW5pb2FkbWluIgogICAgICBzZWNyZXQtYWNjZXNzLWtleTogIm1pbmlvYWRtaW4iCg==",
+                    ),
+                    secret-name: None,
+                },
+            ],
+        ),
     },
-    created-at: "2025-09-10T12:03:04Z",
-    updated-at: "2025-09-10T12:03:07Z",
-    id: "080155df097248",
-    instance-id: "01K4SR42ZPDHHCN70QNZKVPK48",
-    name: "machine",
-    state: MachineState::Started,
+    created-at: "2026-03-31T06:08:08Z",
+    updated-at: "2026-03-31T06:08:08Z",
+    id: "d892d51f691378",
+    instance-id: "01KN183BZYXG5QCDBEPMFHE84Y",
+    name: "obelisk",
+    state: MachineState::Created,
     region: Region::Ams,
     host-status: HostStatus::Ok,
 }

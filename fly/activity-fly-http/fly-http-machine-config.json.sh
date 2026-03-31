@@ -26,7 +26,7 @@ cat <<EOF
             "protocol": "tcp"
         }
     ],
-    "env": [ ["key", "val"], ["other", "otherval"] ],
+    "env": [ ["key", "val"], ["other", null] ],
     "files": [
         {"guest-path":"/etc/info.txt", "raw-value":"$(echo -n "hello" | base64)"}
     ],
