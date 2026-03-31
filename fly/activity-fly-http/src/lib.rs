@@ -4,21 +4,6 @@ mod machine;
 mod secret;
 mod volume;
 mod wstd_util;
-
-mod env_serde {
-    use serde::{Deserialize, Deserializer};
-    use std::collections::BTreeMap;
-
-    pub fn deserialize<'de, D>(
-        deserializer: D,
-    ) -> Result<Option<Vec<(String, String)>>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let map: Option<BTreeMap<String, String>> = Option::deserialize(deserializer)?;
-        Ok(map.map(|m| m.into_iter().collect()))
-    }
-}
 mod generated {
     #![allow(clippy::empty_line_after_outer_attr)]
     include!(concat!(env!("OUT_DIR"), "/any.rs"));

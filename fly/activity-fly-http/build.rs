@@ -22,7 +22,7 @@ fn main() -> Result<()> {
     let contents = re_env
         .replace(
             &contents,
-            "#[serde(deserialize_with = \"crate::env_serde::deserialize\", default)]\n    $1",
+            "#[serde(with = \"crate::machine::env_serde\", default)]\n    $1",
         )
         .into_owned();
     std::fs::write(&path, contents)?;

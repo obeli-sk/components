@@ -2,7 +2,6 @@ use crate::generated::exports::obelisk_flyio::activity_fly_http::machines::{
     ExecConfig, ExecResponse, Guest, Machine, MachineConfig,
 };
 use crate::generated::obelisk_flyio::activity_fly_http::regions::Region;
-use crate::machine::ser::MachineConfigSer;
 use crate::wstd_util::JsonRequest as _;
 use crate::{API_BASE_URL, AppName, Component, MachineId, request_with_api_token};
 use anyhow::{Context, anyhow, bail, ensure};
@@ -14,62 +13,55 @@ use serde::Serialize;
 use wstd::http::{Body, Client, Method, StatusCode};
 use wstd::runtime::block_on;
 
-pub(crate) mod ser {
-    use std::collections::HashMap;
+pub(crate) mod env_serde {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use std::collections::BTreeMap;
 
+    pub fn deserialize<'de, D>(
+        deserializer: D,
+    ) -> Result<Option<Vec<(String, String)>>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let map: Option<BTreeMap<String, String>> = Option::deserialize(deserializer)?;
+        Ok(map.map(|m| m.into_iter().collect()))
+    }
+
+    pub fn serialize<S>(
+        value: &Option<Vec<(String, String)>>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match value {
+            None => serializer.serialize_none(),
+            Some(pairs) => {
+                let map: BTreeMap<&str, &str> =
+                    pairs.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+                map.serialize(serializer)
+            }
+        }
+    }
+}
+
+pub(crate) mod ser {
     use crate::generated::exports::obelisk_flyio::activity_fly_http::machines::{
-        ExecResponse, FileConfig, GuestConfig, InitConfig, MachineConfig, MachineRestart, Mount,
-        ServiceConfig, StopConfig,
+        ExecResponse, MachineConfig,
     };
     use crate::generated::obelisk_flyio::activity_fly_http::regions::Region;
     use serde::{Deserialize, Serialize};
 
-    // Fix env var serialization.
-    // WIT: `option<list<tuple<string, string>>>`
-    // Expected `{"key1":"val1",...}`
-    // TODO: Remove when `map` type is implemented.
-    #[derive(Serialize, Debug)]
-    pub(crate) struct MachineConfigSer {
-        pub image: String,
-        pub guest: Option<GuestConfig>,
-        /// Destroy the VM after first exec
-        pub auto_destroy: Option<bool>,
-        pub init: Option<InitConfig>,
-        pub env: Option<HashMap<String, String>>,
-        pub restart: Option<MachineRestart>,
-        pub stop_config: Option<StopConfig>,
-        pub mounts: Option<Vec<Mount>>,
-        pub services: Option<Vec<ServiceConfig>>,
-        pub files: Option<Vec<FileConfig>>,
-    }
-
-    impl From<MachineConfig> for MachineConfigSer {
-        fn from(value: MachineConfig) -> Self {
-            MachineConfigSer {
-                image: value.image,
-                guest: value.guest,
-                auto_destroy: value.auto_destroy,
-                init: value.init,
-                env: value.env.map(HashMap::from_iter),
-                restart: value.restart,
-                stop_config: value.stop_config,
-                mounts: value.mounts,
-                services: value.services,
-                files: value.files,
-            }
-        }
-    }
-
     #[derive(Serialize, Debug)]
     pub(crate) struct MachineCreateRequestSer {
         pub(crate) name: String,
-        pub(crate) config: MachineConfigSer,
+        pub(crate) config: MachineConfig,
         pub(crate) region: Option<Region>,
     }
 
     #[derive(Serialize, Debug)]
     pub(crate) struct MachineUpdateRequestSer {
-        pub(crate) config: MachineConfigSer,
+        pub(crate) config: MachineConfig,
         pub(crate) region: Option<Region>,
     }
 
@@ -169,7 +161,7 @@ async fn create(
     {
         let request_payload = MachineCreateRequestSer {
             name: machine_name,
-            config: MachineConfigSer::from(machine_config),
+            config: machine_config,
             region,
         };
         let url = format!("{API_BASE_URL}/apps/{app_name}/machines");
@@ -210,7 +202,7 @@ async fn update(
 ) -> Result<(), anyhow::Error> {
     {
         let request_payload = MachineUpdateRequestSer {
-            config: MachineConfigSer::from(machine_config),
+            config: machine_config,
             region,
         };
         let url = format!("{API_BASE_URL}/apps/{app_name}/machines/{machine_id}");
