@@ -17,9 +17,9 @@ pub(crate) mod env_serde {
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
     use std::collections::BTreeMap;
 
-    pub fn deserialize<'de, D>(
-        deserializer: D,
-    ) -> Result<Option<Vec<(String, Option<String>)>>, D::Error>
+    type EnvVarsVec = Vec<(String, Option<String>)>;
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<EnvVarsVec>, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -27,10 +27,7 @@ pub(crate) mod env_serde {
         Ok(map.map(|m| m.into_iter().collect()))
     }
 
-    pub fn serialize<S>(
-        value: &Option<Vec<(String, Option<String>)>>,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
+    pub fn serialize<S>(value: &Option<EnvVarsVec>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
