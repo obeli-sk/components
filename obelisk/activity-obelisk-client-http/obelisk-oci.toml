@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_obelisk_client_http"
-location = "oci://docker.io/getobelisk/components_obelisk_activity_obelisk_client_http:2026-03-30@sha256:f5fa282bb6941b3520c9ac98a949f0c1438eb3f728369858165bba4a91a8dd4c"
+location = "oci://docker.io/getobelisk/components_obelisk_activity_obelisk_client_http:2026-04-08@sha256:36eb6999d94c8e9267d6e16a02bdafa9cb3bc2bd9582175498b61c34d43bccf5"
 [[activity_wasm.allowed_host]]
 pattern = "*"
 methods = ["GET", "POST"]

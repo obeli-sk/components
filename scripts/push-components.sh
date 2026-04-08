@@ -1,60 +1,49 @@
 #!/usr/bin/env bash
 
 # Pushes all WASM components referred in current directory's obelisk-local.toml
-# to the Docker Hub and creates or updates obelisk-oci.toml
+# to the Docker Hub and creates or updates obelisk-oci.toml.
 # Expects that all components are already built.
 set -exuo pipefail
 
-OBELISK_TOML_DIR_VALUE="${PWD}"
-PARENT=$(basename "$(dirname "$PWD")")
-PREFIX="docker.io/getobelisk/components_${PARENT}_"
 TAG="$1"
+PARENT=$(basename "$(dirname "$PWD")")
+PREFIX="oci://docker.io/getobelisk/components_${PARENT}_"
 
 SOURCE_TOML_FILE="obelisk-local.toml"
 TARGET_TOML_FILE="obelisk-oci.toml"
-# Determine $TOML_COMPONENT_TYPE from the current directory name prefix
-DIR_NAME=$(basename "$PWD")
-if [[ "$DIR_NAME" == activity-* ]]; then
-    TOML_COMPONENT_TYPE="activity_wasm"
-elif [[ "$DIR_NAME" == webhook-* ]]; then
-    TOML_COMPONENT_TYPE="webhook_endpoint_wasm"
-elif [[ "$DIR_NAME" == workflow-* ]]; then
-    TOML_COMPONENT_TYPE="workflow_wasm"
-else
-    echo "Error: directory '${DIR_NAME}' does not start with a known prefix (activity-, webhook-, workflow-)" >&2
-    exit 1
-fi
 
-push() {
-    RELATIVE_PATH=$1
-    FILE_NAME_WITHOUT_EXT=$(basename "$RELATIVE_PATH" | sed 's/\.[^.]*$//')
-    OCI_LOCATION="${PREFIX}${FILE_NAME_WITHOUT_EXT}:${TAG}"
-    echo "Pushing ${RELATIVE_PATH} to ${OCI_LOCATION}..."
+push_component() {
+    local LOCAL_DEPLOYMENT_TOML="$1"
+    local COMPONENT_NAME="$2"
+
+    OCI_LOCATION="${PREFIX}${COMPONENT_NAME}:${TAG}"
     if [ "$TAG" != "dryrun" ]; then
-        OUTPUT=$(obelisk component push "$RELATIVE_PATH" "$OCI_LOCATION")
+        obelisk component push --deployment "$LOCAL_DEPLOYMENT_TOML" "$COMPONENT_NAME" "$OCI_LOCATION"
     else
-        OUTPUT="dryrun"
+        echo "$OCI_LOCATION"
     fi
-    # Replace the old location with the actual OCI location
-    obelisk component add --name ${FILE_NAME_WITHOUT_EXT} --deployment ${TARGET_TOML_FILE} ${TOML_COMPONENT_TYPE} ${OUTPUT} 
 }
 
+push_and_update() {
+    local LOCAL_DEPLOYMENT_TOML="$1"
+    local COMPONENT_NAME="$2"
+    shift 2
+    DST_TOML_FILES=("$@")
+
+    OCI_LOCATION=$(push_component "$LOCAL_DEPLOYMENT_TOML" "$COMPONENT_NAME")
+
+    for DST_TOML_FILE in "${DST_TOML_FILES[@]}"; do
+        obelisk component add --deployment "$DST_TOML_FILE" "$OCI_LOCATION" "$COMPONENT_NAME"
+    done
+}
+
+# Seed the target TOML from the source so that `obelisk component add` has
+# existing entries to update.
 cp "$SOURCE_TOML_FILE" "$TARGET_TOML_FILE"
 
-
-while IFS= read -r line; do
-  [[ $line != location\ =\ * ]] && continue
-
-  # extract quoted path
-  raw_path=${line#*\"}
-  raw_path=${raw_path%\"*}
-
-  # interpolate ${DEPLOYMENT_DIR}
-  path=${raw_path//\$\{DEPLOYMENT_DIR\}/$OBELISK_TOML_DIR_VALUE}
-
-  push $path
-
-done < "$TARGET_TOML_FILE"
-
+# Push every component declared in the source TOML.
+while IFS= read -r COMPONENT_NAME; do
+    push_and_update "$SOURCE_TOML_FILE" "$COMPONENT_NAME" "$TARGET_TOML_FILE"
+done < <(grep -E '^name = "' "$SOURCE_TOML_FILE" | sed -E 's/^name = "([^"]+)".*/\1/')
 
 echo "All components pushed and TOML file updated successfully."
