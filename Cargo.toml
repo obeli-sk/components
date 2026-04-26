@@ -23,8 +23,8 @@ rust-version = "1.89.0"
 [workspace.dependencies]
 anyhow = "1.0"
 assert_matches = "1.5.0"
-cynic = "3.13.1"
-cynic-codegen = "3.13.1"
+cynic = "3.13.2"
+cynic-codegen = "3.13.2"
 derive_more = { version = "2.1.1", features = ["debug", "display", "from"] }
 futures-concurrency = "7.7.1"
 heck = "0.5.0"
@@ -33,10 +33,10 @@ regex = "1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ulid = "1.2.1"
-wasip2 = "1.0.2"
-wit-bindgen  = "0.55.0"
-wit-bindgen-rust = "0.55.0"
-wit-parser = "0.246.2"
+wasip2 = "1.0.3"
+wit-bindgen  = "0.57.1"
+wit-bindgen-rust = "0.57.1"
+wit-parser = "0.247.0"
 wstd = "0.6.5"
 
 [profile.release]
