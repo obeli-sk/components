@@ -36,7 +36,7 @@ ulid = "1.2.1"
 wasip2 = "1.0.3"
 wit-bindgen  = "0.57.1"
 wit-bindgen-rust = "0.57.1"
-wit-parser = "0.247.0"
+wit-parser = "0.248.0"
 wstd = "0.6.5"
 
 [profile.release]
