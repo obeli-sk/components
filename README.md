@@ -12,7 +12,7 @@ Activities are components that perform side effects (HTTP calls, database operat
 
 | Component | Description |
 |-----------|-------------|
-| [activity-docker](docker/activity-docker) | Docker container management using Process API |
+| [activity-docker](docker/activity-docker) | Docker container management using exec activities |
 | [activity-fly-http](fly/activity-fly-http) | Fly.io API (apps, machines, secrets, volumes) |
 | [activity-github-graphql](github/activity-github-graphql) | GitHub GraphQL API (account info, stargazers) |
 | [activity-http-generic](http/activity-http-generic) | Generic HTTP client |

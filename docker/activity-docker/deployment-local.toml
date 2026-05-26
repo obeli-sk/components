@@ -1,0 +1,121 @@
+# Docker activity using activity_exec — no WASM compilation needed.
+# Requires `docker` and `jq` to be available in PATH on the host.
+
+# --- Containers ---
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.run"
+location = "${DEPLOYMENT_DIR}/scripts/container-run.sh"
+exec.lock_expiry.seconds = 60
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+    { name = "config", type = 'record { image: string, env: list<tuple<string, string>>, cmd: option<list<string>>, ports: list<record { host-port: u16, container-port: u16, protocol: string }>, mounts: list<record { source: string, target: string, readonly: bool }>, network: option<string> }' },
+]
+return_type = "result<string, string>"
+max_output_bytes = 4096
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.start"
+location = "${DEPLOYMENT_DIR}/scripts/container-start.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<_, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.stop"
+location = "${DEPLOYMENT_DIR}/scripts/container-stop.sh"
+exec.lock_expiry.seconds = 30
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<_, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.rm"
+location = "${DEPLOYMENT_DIR}/scripts/container-rm.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+    { name = "force", type = "bool" },
+]
+return_type = "result<_, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.inspect"
+location = "${DEPLOYMENT_DIR}/scripts/container-inspect.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<option<record { id: string, state: string }>, string>"
+max_output_bytes = 8192
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/containers.list"
+location = "${DEPLOYMENT_DIR}/scripts/container-list.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "all", type = "bool" },
+]
+return_type = "result<list<record { id: string, name: string, image: string, state: string, status: string }>, string>"
+max_output_bytes = 65536
+
+# --- Networks ---
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/networks.create"
+location = "${DEPLOYMENT_DIR}/scripts/network-create.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+    { name = "driver", type = "option<string>" },
+]
+return_type = "result<string, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/networks.rm"
+location = "${DEPLOYMENT_DIR}/scripts/network-rm.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<_, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/networks.prune"
+location = "${DEPLOYMENT_DIR}/scripts/network-prune.sh"
+env_vars = ["PATH"]
+return_type = "result<_, string>"
+
+# --- Volumes ---
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/volumes.create"
+location = "${DEPLOYMENT_DIR}/scripts/volume-create.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<string, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/volumes.rm"
+location = "${DEPLOYMENT_DIR}/scripts/volume-rm.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<_, string>"
+
+[[activity_exec]]
+ffqn = "obelisk-docker:activity-docker/volumes.exists"
+location = "${DEPLOYMENT_DIR}/scripts/volume-exists.sh"
+env_vars = ["PATH"]
+params = [
+    { name = "name", type = "string" },
+]
+return_type = "result<bool, string>"
