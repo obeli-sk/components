@@ -1,7 +1,7 @@
 build:
 
 verify-local:
-	obelisk server verify --ignore-missing-env-vars --deployment deployment-local.toml
+	obelisk server verify --ignore-missing-env-vars --deployment obelisk-local.toml
 
 verify-oci:
 	obelisk server verify --ignore-missing-env-vars --deployment obelisk-oci.toml
@@ -10,4 +10,4 @@ push tag:
 	(../../scripts/push-components.sh {{ tag }})
 
 serve:
-	obelisk server run --deployment deployment-local.toml
+	obelisk server run --deployment obelisk-local.toml
