@@ -1,7 +1,6 @@
 [workspace]
 resolver = "2"
 members = [
-    "docker/activity-docker",
     "fly/activity-fly-http",
     "fly/webhook-fly-secrets-updater",
     "github/activity-github-graphql",
