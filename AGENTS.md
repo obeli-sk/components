@@ -21,12 +21,12 @@ echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.con
 sudo systemctl restart nix-daemon.service
 ```
 
-**Configure Garnix cache for faster builds:**
+**Configure Cachix cache for faster builds:**
 
 ```bash
 cat << 'EOF' | sudo tee -a /etc/nix/nix.conf
-extra-substituters = https://cache.garnix.io
-extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
+extra-substituters = https://obeli-sk.cachix.org
+extra-trusted-public-keys = obeli-sk.cachix.org-1:31iM9GWSEhAXvvuTWQ7CvAcwvgRzsuJ9yJghywSd3Jw=
 EOF
 sudo systemctl restart nix-daemon.service
 ```
