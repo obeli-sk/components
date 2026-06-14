@@ -27,15 +27,15 @@ cynic-codegen = "3.13.2"
 derive_more = { version = "2.1.1", features = ["debug", "display", "from"] }
 futures-concurrency = "7.7.1"
 heck = "0.5.0"
-insta = "1.47.2"
+insta = "1.48.0"
 regex = "1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ulid = "1.2.1"
-wasip2 = "1.0.3"
-wit-bindgen  = "0.57.1"
-wit-bindgen-rust = "0.57.1"
-wit-parser = "0.251.0"
+wasip2 = "1.0.4"
+wit-bindgen  = "0.58.0"
+wit-bindgen-rust = "0.58.0"
+wit-parser = "0.252.0"
 wstd = "0.6.5"
 
 [profile.release]
