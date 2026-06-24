@@ -24,10 +24,10 @@ export OPENAI_API_KEY="sk-..."
 ## Building
 
 ```sh
-cargo build --release
+just build
 ```
 
-The component will be at `target/wasm32-wasip2/release/activity_openai_responses.wasm`.
+The component will be at `target/wasm32-wasip2/release_activity/activity_openai_responses.wasm`.
 
 ## WIT Interface
 
@@ -70,8 +70,8 @@ variant api-error {
 Build the activity and run Obelisk with appropriate configuration:
 
 ```sh
-cargo build --release --target wasm32-wasip2
-obelisk server run --config ./obelisk.toml
+just build
+obelisk server run --deployment ./obelisk-local.toml
 ```
 
 Submit a simple request:

@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_openai_responses"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_openai_responses.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_openai_responses.wasm"
 exec.lock_expiry.seconds = 60
 env_vars = [{key="OPENAI_API_BASE_URL", value="${OPENAI_API_BASE_URL:-https://api.openai.com/v1}"}]
 [[activity_wasm.allowed_host]]

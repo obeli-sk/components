@@ -1,4 +1,5 @@
-all-build: build-activities build-webhooks
+all-build:
+	just run-all build
 
 # private
 build-activities:

@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_obelisk_client_http"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_obelisk_client_http.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_obelisk_client_http.wasm"
 [[activity_wasm.allowed_host]]
 pattern = "*"
 methods = ["GET", "POST"]

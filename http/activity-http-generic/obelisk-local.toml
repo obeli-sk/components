@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_http_generic"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_http_generic.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_http_generic.wasm"
 exec.lock_expiry.seconds = 5
 [[activity_wasm.allowed_host]]
 pattern = "*"

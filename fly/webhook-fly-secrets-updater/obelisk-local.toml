@@ -1,6 +1,6 @@
 [[webhook_endpoint_wasm]]
 name = "webhook_fly_secrets_updater"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_webhook/webhook_fly_secrets_updater.wasm"
+location = "target/wasm32-wasip2/release_webhook/webhook_fly_secrets_updater.wasm"
 routes = [{ methods = ["POST"], route = "/" }]
 [[webhook_endpoint_wasm.allowed_host]]
 pattern = "https://api.machines.dev"
