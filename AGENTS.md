@@ -308,9 +308,10 @@ forward_stdout = "stderr"
 forward_stderr = "stderr"
 ```
 
-Run locally with:
+Run locally with (`just build` builds into the component-local `target/` that
+`obelisk-local.toml` points at):
 ```bash
-cargo build --release
+just build
 obelisk server run --deployment ./obelisk-local.toml
 ```
 
