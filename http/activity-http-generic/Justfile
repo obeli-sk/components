@@ -1,8 +1,8 @@
 build:
-	cargo build --profile=release_activity
+	CARGO_TARGET_DIR=target cargo build --profile=release_activity
 
 serve:
-	obelisk server run --config obelisk-local.toml
+	obelisk server run --deployment obelisk-local.toml
 
 verify-local:
 	obelisk server verify --ignore-missing-env-vars --deployment obelisk-local.toml

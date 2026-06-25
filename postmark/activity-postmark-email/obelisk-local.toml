@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_postmark_email"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_postmark_email.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_postmark_email.wasm"
 exec.lock_expiry.seconds = 30
 env_vars = [{key="POSTMARK_API_URL", value="${POSTMARK_API_URL:-https://api.postmarkapp.com/email}"}]
 [[activity_wasm.allowed_host]]

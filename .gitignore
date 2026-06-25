@@ -1,5 +1,5 @@
-/target
+target/
 .direnv
 .envrc
 fly.toml
-target-sandbox
+target-sandbox/

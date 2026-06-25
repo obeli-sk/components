@@ -6,7 +6,7 @@
 [[activity_exec]]
 name = "activity_docker_containers_run"
 ffqn = "obelisk-docker:activity-docker/containers.run"
-location = "${DEPLOYMENT_DIR}/scripts/container-run.sh"
+location = "scripts/container-run.sh"
 exec.lock_expiry.seconds = 60
 env_vars = ["PATH"]
 params = [
@@ -19,7 +19,7 @@ max_output_bytes = 4096
 [[activity_exec]]
 name = "activity_docker_containers_start"
 ffqn = "obelisk-docker:activity-docker/containers.start"
-location = "${DEPLOYMENT_DIR}/scripts/container-start.sh"
+location = "scripts/container-start.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -29,7 +29,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_stop"
 ffqn = "obelisk-docker:activity-docker/containers.stop"
-location = "${DEPLOYMENT_DIR}/scripts/container-stop.sh"
+location = "scripts/container-stop.sh"
 exec.lock_expiry.seconds = 30
 env_vars = ["PATH"]
 params = [
@@ -40,7 +40,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_rm"
 ffqn = "obelisk-docker:activity-docker/containers.rm"
-location = "${DEPLOYMENT_DIR}/scripts/container-rm.sh"
+location = "scripts/container-rm.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -51,7 +51,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_inspect"
 ffqn = "obelisk-docker:activity-docker/containers.inspect"
-location = "${DEPLOYMENT_DIR}/scripts/container-inspect.sh"
+location = "scripts/container-inspect.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -62,7 +62,7 @@ max_output_bytes = 8192
 [[activity_exec]]
 name = "activity_docker_containers_list"
 ffqn = "obelisk-docker:activity-docker/containers.list"
-location = "${DEPLOYMENT_DIR}/scripts/container-list.sh"
+location = "scripts/container-list.sh"
 env_vars = ["PATH"]
 params = [
     { name = "all", type = "bool" },
@@ -75,7 +75,7 @@ max_output_bytes = 65536
 [[activity_exec]]
 name = "activity_docker_networks_create"
 ffqn = "obelisk-docker:activity-docker/networks.create"
-location = "${DEPLOYMENT_DIR}/scripts/network-create.sh"
+location = "scripts/network-create.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -86,7 +86,7 @@ return_type = "result<string, string>"
 [[activity_exec]]
 name = "activity_docker_networks_rm"
 ffqn = "obelisk-docker:activity-docker/networks.rm"
-location = "${DEPLOYMENT_DIR}/scripts/network-rm.sh"
+location = "scripts/network-rm.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -96,7 +96,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_networks_prune"
 ffqn = "obelisk-docker:activity-docker/networks.prune"
-location = "${DEPLOYMENT_DIR}/scripts/network-prune.sh"
+location = "scripts/network-prune.sh"
 env_vars = ["PATH"]
 return_type = "result<_, string>"
 
@@ -105,7 +105,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_create"
 ffqn = "obelisk-docker:activity-docker/volumes.create"
-location = "${DEPLOYMENT_DIR}/scripts/volume-create.sh"
+location = "scripts/volume-create.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -115,7 +115,7 @@ return_type = "result<string, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_rm"
 ffqn = "obelisk-docker:activity-docker/volumes.rm"
-location = "${DEPLOYMENT_DIR}/scripts/volume-rm.sh"
+location = "scripts/volume-rm.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -125,7 +125,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_exists"
 ffqn = "obelisk-docker:activity-docker/volumes.exists"
-location = "${DEPLOYMENT_DIR}/scripts/volume-exists.sh"
+location = "scripts/volume-exists.sh"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },

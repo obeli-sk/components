@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_fly_http"
-location = "${DEPLOYMENT_DIR}/../../target/wasm32-wasip2/release_activity/activity_fly_http.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_fly_http.wasm"
 exec.lock_expiry.seconds = 15
 [[activity_wasm.allowed_host]]
 pattern = "https://api.machines.dev"

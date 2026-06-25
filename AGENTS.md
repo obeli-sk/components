@@ -301,17 +301,18 @@ webui.listening_addr = "127.0.0.1:8080"
 
 [[activity_wasm]]
 name = "activity_your_name"
-location.path = "${OBELISK_TOML_DIR}/../../target/wasm32-wasip2/release/activity_your_name.wasm"
+location = "target/wasm32-wasip2/release_activity/activity_your_name.wasm"
 exec.lock_expiry.seconds = 5
 env_vars = ["YOUR_API_KEY"]
 forward_stdout = "stderr"
 forward_stderr = "stderr"
 ```
 
-Run locally with:
+Run locally with (`just build` builds into the component-local `target/` that
+`obelisk-local.toml` points at):
 ```bash
-cargo build --release
-obelisk server run --config ./obelisk-local.toml
+just build
+obelisk server run --deployment ./obelisk-local.toml
 ```
 
 Submit an execution (in another terminal):

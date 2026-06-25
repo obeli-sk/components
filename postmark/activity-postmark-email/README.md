@@ -31,7 +31,7 @@ First, start the Obelisk server:
 
 ```bash
 export POSTMARK_SERVER_TOKEN="your-token"
-obelisk server run --config ./obelisk-local.toml
+obelisk server run --deployment ./obelisk-local.toml
 ```
 
 Then submit executions using the CLI:
@@ -107,7 +107,7 @@ See [Postmark API Error Codes](https://postmarkapp.com/developer/api/overview#er
 ## Building
 
 ```bash
-cargo build --release --profile release_activity
+just build
 ```
 
 ## Testing
@@ -125,6 +125,6 @@ cargo test -- --ignored
 
 ```bash
 export POSTMARK_SERVER_TOKEN="your-token"
-cargo build --release --profile release_activity
-obelisk server run --config ./obelisk-local.toml
+just build
+obelisk server run --deployment ./obelisk-local.toml
 ```
