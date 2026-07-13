@@ -2,10 +2,10 @@ build:
 	CARGO_TARGET_DIR=target cargo build --profile=release_activity
 
 verify-local:
-	obelisk server verify --ignore-missing-env-vars --deployment obelisk-local.toml
+	obelisk server verify --allow-unavailable-runtime-config --deployment obelisk-local.toml
 
 verify-oci:
-	obelisk server verify --ignore-missing-env-vars --deployment obelisk-oci.toml
+	obelisk server verify --allow-unavailable-runtime-config --deployment obelisk-oci.toml
 
 push tag:
 	(../../scripts/push-components.sh {{ tag }})
