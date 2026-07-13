@@ -6,7 +6,7 @@
 [[activity_exec]]
 name = "activity_docker_containers_run"
 ffqn = "obelisk-docker:activity-docker/containers.run"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_run:2026-05-27@sha256:61754e00b73512775c96d25b4eabaa49715e3fe9c4645610f85be107420ffc15"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_run:2026-07-13@sha256:79a9c78536ac51d85cc9b89e79eec6b40a7d0f80bd6ceeda649b47a4e8380b52"
 exec.lock_expiry.seconds = 60
 env_vars = ["PATH"]
 params = [
@@ -19,7 +19,7 @@ max_output_bytes = 4096
 [[activity_exec]]
 name = "activity_docker_containers_start"
 ffqn = "obelisk-docker:activity-docker/containers.start"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_start:2026-05-27@sha256:b471be2c1a8d1cdf72990be2a3fe6864257ef555ba8c855903abb944d29a1231"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_start:2026-07-13@sha256:34a0400115a7344b90c82678798e1df607f4300331b716ae74fd866c73bed053"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -29,7 +29,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_stop"
 ffqn = "obelisk-docker:activity-docker/containers.stop"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_stop:2026-05-27@sha256:1c68a5ea9eb846d6408b8e8389456b2455ae3ba7f9823b4c07de466758ba37a4"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_stop:2026-07-13@sha256:c13a8ea4802941a1349afe11ba30aaba170f31c1fa7b5b91cd73d9d565784a41"
 exec.lock_expiry.seconds = 30
 env_vars = ["PATH"]
 params = [
@@ -40,7 +40,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_rm"
 ffqn = "obelisk-docker:activity-docker/containers.rm"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_rm:2026-05-27@sha256:c068dbe34b67c756509756a1eb5e35927d8737b23821b7f270160733578cc7dc"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_rm:2026-07-13@sha256:084c363b2a5a3fd80234a41f4745f483c1926ab1f61a5017fa722cbbc1633454"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -51,7 +51,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_containers_inspect"
 ffqn = "obelisk-docker:activity-docker/containers.inspect"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_inspect:2026-05-27@sha256:77df05d00246fb88e9ed8acd275a78f9037e5656e6442d56102b44533de63504"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_inspect:2026-07-13@sha256:266e8cef3e278a69fb222efd1c47aad42c7e193639a0df5697ce87c66da84959"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -62,7 +62,7 @@ max_output_bytes = 8192
 [[activity_exec]]
 name = "activity_docker_containers_list"
 ffqn = "obelisk-docker:activity-docker/containers.list"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_list:2026-05-27@sha256:6481f9c0b9410ea991fdc8ba537e2408b6b2850caa65e89fac12de89bfa5f107"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_containers_list:2026-07-13@sha256:8324a8c61e53f0af5b64260ca84a8ad52008a9f840cf1c0a9ca95255f64d0cda"
 env_vars = ["PATH"]
 params = [
     { name = "all", type = "bool" },
@@ -75,7 +75,7 @@ max_output_bytes = 65536
 [[activity_exec]]
 name = "activity_docker_networks_create"
 ffqn = "obelisk-docker:activity-docker/networks.create"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_create:2026-05-27@sha256:30b824210b621cfce5916a91322c7c6ba325b6dc4488c32d58cd6b990f58e8e7"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_create:2026-07-13@sha256:a272972fb2396dd496f382388b297d8fe1fdccafdd4a6fd1844234a84d5390ec"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -86,7 +86,7 @@ return_type = "result<string, string>"
 [[activity_exec]]
 name = "activity_docker_networks_rm"
 ffqn = "obelisk-docker:activity-docker/networks.rm"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_rm:2026-05-27@sha256:8370694f23b6a5373ee6d06d5daa25cc42c59633ef6c1c603d69788f63e73984"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_rm:2026-07-13@sha256:f7ee5177155c5ac4fe5bdb976d1e207d305e8343fc9f81ca39fafd5db3006c56"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -96,7 +96,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_networks_prune"
 ffqn = "obelisk-docker:activity-docker/networks.prune"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_prune:2026-05-27@sha256:fc94cd7d29fa9c2b237dae1ca7cb3fe16aca82a4b0a0b4b059d7e4d47f3686ca"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_networks_prune:2026-07-13@sha256:142b435c8df58f4ea7f0137c5f7e5329b591ac6daa3dfd57ebac05e2b5cad3dc"
 env_vars = ["PATH"]
 return_type = "result<_, string>"
 
@@ -105,7 +105,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_create"
 ffqn = "obelisk-docker:activity-docker/volumes.create"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_create:2026-05-27@sha256:727e7e7443db9acf56cd43ffb8231b239a7c3177a219b2a04ba197f20539a563"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_create:2026-07-13@sha256:f479f5f5dec7a1ec7cd95388fa237f69082098e7e272485bbf6a699245eccfa7"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -115,7 +115,7 @@ return_type = "result<string, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_rm"
 ffqn = "obelisk-docker:activity-docker/volumes.rm"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_rm:2026-05-27@sha256:fcb25ee20adb075c682f4acf872f0f476f52c08714d5e35b91896c1671f40822"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_rm:2026-07-13@sha256:7d8f1786d6076fd6ddb9c991552f6c1239937603dcfa7b604b9ca6ec695ba2d7"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
@@ -125,7 +125,7 @@ return_type = "result<_, string>"
 [[activity_exec]]
 name = "activity_docker_volumes_exists"
 ffqn = "obelisk-docker:activity-docker/volumes.exists"
-location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_exists:2026-05-27@sha256:ab4f57d5e63e66d442e314a897b90b29cce527aebabd6aeba570224e498b2fd5"
+location = "oci://docker.io/getobelisk/components_docker_activity_docker_volumes_exists:2026-07-13@sha256:395f30d7d55c632c620999d84be57ebc498fa2c2e6a4dfbc06f33c8018fb4c6d"
 env_vars = ["PATH"]
 params = [
     { name = "name", type = "string" },
