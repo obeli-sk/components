@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_github_graphql"
-location = "oci://docker.io/getobelisk/components_github_activity_github_graphql:2026-04-08@sha256:6bc07b77e908266ae5cc4f36c69ce2949bb714b420be9f111e09e90a5e9107d0"
+location = "oci://docker.io/getobelisk/components_github_activity_github_graphql:2026-07-13@sha256:36a061ac3fa378f6e9b2d1a13a63798ff4383fd3020b213563b4ea24a3d11f8d"
 exec.lock_expiry.seconds = 5
 [[activity_wasm.allowed_host]]
 pattern = "https://api.github.com"

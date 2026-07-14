@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_http_generic"
-location = "oci://docker.io/getobelisk/components_http_activity_http_generic:2026-04-08@sha256:eb2ddeca721af890dab4a827356fb339176d3207be60ad221d200ce88911e76a"
+location = "oci://docker.io/getobelisk/components_http_activity_http_generic:2026-07-13@sha256:9d20697857193e998842c627d0e51d9228a8964374df9210b4dab2293e242efd"
 exec.lock_expiry.seconds = 5
 [[activity_wasm.allowed_host]]
 pattern = "*"

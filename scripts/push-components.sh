@@ -3,6 +3,11 @@
 # Pushes all WASM components referred in current directory's obelisk-local.toml
 # to the Docker Hub and creates or updates obelisk-oci.toml.
 # Expects that all components are already built.
+#
+# Usage: just all-build all-push <tag>
+# Examples:
+# just all-push-dryrun
+# just all-build all-push "$(date +%Y-%m-%d)"
 set -exuo pipefail
 
 TAG="$1"

@@ -1,6 +1,6 @@
 [[activity_wasm]]
 name = "activity_postmark_email"
-location = "oci://docker.io/getobelisk/components_postmark_activity_postmark_email:2026-04-08@sha256:e5e2f42b2babca1accb4722a3443577a4f97753d0d2ede42e2005a2416601f7a"
+location = "oci://docker.io/getobelisk/components_postmark_activity_postmark_email:2026-07-13@sha256:b0704585d94275b6e23661274be4a0bbf7231c37d22223399046e3f172b2d49c"
 exec.lock_expiry.seconds = 30
 env_vars = [{key="POSTMARK_API_URL", value="${POSTMARK_API_URL:-https://api.postmarkapp.com/email}"}]
 [[activity_wasm.allowed_host]]
