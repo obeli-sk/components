@@ -5,6 +5,5 @@ routes = [{ methods = ["POST"], route = "/" }]
 [[webhook_endpoint_wasm.allowed_host]]
 pattern = "https://api.machines.dev"
 methods = ["POST"]
-[webhook_endpoint_wasm.allowed_host.secrets]
-env_vars = ["FLY_API_TOKEN"]
+secrets = ["FLY_API_TOKEN"]
 replace_in = ["headers"]

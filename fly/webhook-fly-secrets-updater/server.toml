@@ -1,0 +1,8 @@
+[secrets]
+FLY_API_TOKEN = { env = "FLY_API_TOKEN" }
+
+[[outbound_http.allowed_host]]
+pattern = "https://api.machines.dev"
+methods = ["POST"]
+secrets = ["FLY_API_TOKEN"]
+replace_in = ["headers"]

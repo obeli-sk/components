@@ -1,0 +1,8 @@
+[secrets]
+OPENAI_API_KEY = { env = "OPENAI_API_KEY" }
+
+[[outbound_http.allowed_host]]
+pattern = "${OPENAI_API_DOMAIN:-api.openai.com}"
+methods = ["POST", "GET", "DELETE"]
+secrets = ["OPENAI_API_KEY"]
+replace_in = ["headers"]

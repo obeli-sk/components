@@ -6,6 +6,5 @@ env_vars = [{key="SENDGRID_API_URL", value="${SENDGRID_API_URL:-https://api.send
 [[activity_wasm.allowed_host]]
 pattern = "${SENDGRID_API_DOMAIN:-api.sendgrid.com}"
 methods = ["POST"]
-[activity_wasm.allowed_host.secrets]
-env_vars = ["SENDGRID_API_KEY"]
+secrets = ["SENDGRID_API_KEY"]
 replace_in = ["headers"]

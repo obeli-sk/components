@@ -6,6 +6,5 @@ env_vars = [{key="OPENAI_API_BASE_URL", value="${OPENAI_API_BASE_URL:-https://ap
 [[activity_wasm.allowed_host]]
 pattern = "${OPENAI_API_DOMAIN:-api.openai.com}"
 methods = ["POST", "GET", "DELETE"]
-[activity_wasm.allowed_host.secrets]
-env_vars = ["OPENAI_API_KEY"]
+secrets = ["OPENAI_API_KEY"]
 replace_in = ["headers"]

@@ -1,0 +1,3 @@
+[[outbound_http.allowed_host]]
+pattern = "*"
+methods = ["GET", "POST"]

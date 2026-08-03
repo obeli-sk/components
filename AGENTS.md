@@ -312,7 +312,7 @@ Run locally with (`just build` builds into the component-local `target/` that
 `obelisk-local.toml` points at):
 ```bash
 just build
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
 
 Submit an execution (in another terminal):

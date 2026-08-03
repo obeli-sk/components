@@ -31,7 +31,7 @@ First, start the Obelisk server:
 
 ```bash
 export POSTMARK_SERVER_TOKEN="your-token"
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
 
 Then submit executions using the CLI:
@@ -126,5 +126,5 @@ cargo test -- --ignored
 ```bash
 export POSTMARK_SERVER_TOKEN="your-token"
 just build
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```

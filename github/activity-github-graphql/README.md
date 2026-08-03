@@ -15,7 +15,7 @@ export GITHUB_TOKEN="..."
 Build the activity and run Obelisk with `obelisk-local.toml`.
 ```sh
 just build
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
 In another terminal run the activity.
 ```sh

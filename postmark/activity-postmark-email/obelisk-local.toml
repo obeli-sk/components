@@ -6,6 +6,5 @@ env_vars = [{key="POSTMARK_API_URL", value="${POSTMARK_API_URL:-https://api.post
 [[activity_wasm.allowed_host]]
 pattern = "${POSTMARK_API_DOMAIN:-api.postmarkapp.com}"
 methods = ["POST"]
-[activity_wasm.allowed_host.secrets]
-env_vars = ["POSTMARK_SERVER_TOKEN"]
+secrets = ["POSTMARK_SERVER_TOKEN"]
 replace_in = ["headers"]

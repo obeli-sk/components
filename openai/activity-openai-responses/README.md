@@ -71,7 +71,7 @@ Build the activity and run Obelisk with appropriate configuration:
 
 ```sh
 just build
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
 
 Submit a simple request:

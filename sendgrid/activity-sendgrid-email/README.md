@@ -28,7 +28,7 @@ First, start the Obelisk server:
 
 ```bash
 export SENDGRID_API_KEY="SG.your-api-key"
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
 
 Then submit executions using the CLI:
@@ -113,5 +113,5 @@ cargo test -- --ignored
 ```bash
 export SENDGRID_API_KEY="SG.your-api-key"
 just build
-obelisk server run --deployment ./obelisk-local.toml
+obelisk server run --server-config ./server.toml --deployment ./obelisk-local.toml
 ```
