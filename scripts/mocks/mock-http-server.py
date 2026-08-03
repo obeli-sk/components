@@ -6,7 +6,7 @@ This server echoes back request details for testing purposes.
 
 import json
 import sys
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 DEFAULT_PORT = 18083
@@ -75,19 +75,21 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
             
             # Special handling for specific paths
             if parsed_path.path == "/status/404":
+                data = json.dumps({"error": "Not found"}).encode()
                 self.send_response(404)
                 self.send_header('Content-Type', 'application/json')
-                self.send_header('Connection', 'close')
+                self.send_header('Content-Length', len(data))
                 self.end_headers()
-                self.wfile.write(json.dumps({"error": "Not found"}).encode())
+                self.wfile.write(data)
                 return
             
             if parsed_path.path == "/status/500":
+                data = json.dumps({"error": "Internal server error"}).encode()
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
-                self.send_header('Connection', 'close')
+                self.send_header('Content-Length', len(data))
                 self.end_headers()
-                self.wfile.write(json.dumps({"error": "Internal server error"}).encode())
+                self.wfile.write(data)
                 return
             
             if parsed_path.path == "/binary":
@@ -95,7 +97,6 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/octet-stream')
                 self.send_header('Content-Length', len(data))
-                self.send_header('Connection', 'close')
                 self.end_headers()
                 self.wfile.write(data)
                 return
@@ -103,7 +104,6 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
             if parsed_path.path == "/empty":
                 self.send_response(204)
                 self.send_header('Content-Length', '0')
-                self.send_header('Connection', 'close')
                 self.end_headers()
                 return
             
@@ -112,7 +112,6 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', len(response_data))
-            self.send_header('Connection', 'close')
             self.end_headers()
             self.wfile.write(response_data)
             
@@ -142,13 +141,13 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain')
         self.send_header('X-Custom-Header', 'test-value')
-        self.send_header('Connection', 'close')
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Allow', 'GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS')
-        self.send_header('Connection', 'close')
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
     def log_message(self, format, *args):
@@ -157,7 +156,7 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
 
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_PORT
-    server = HTTPServer(('127.0.0.1', port), MockHTTPHandler)
+    server = ThreadingHTTPServer(('127.0.0.1', port), MockHTTPHandler)
     print(f"Mock HTTP server running on http://127.0.0.1:{port}")
     sys.stdout.flush()
     server.serve_forever()
