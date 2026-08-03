@@ -131,6 +131,11 @@ run_github_tests() {
 run_fly_tests() {
     echo "=== Running Fly.io e2e tests ==="
 
+    if [[ -z "${TEST_FLY_API_TOKEN:-}" ]]; then
+        echo "TEST_FLY_API_TOKEN not set, skipping Fly.io tests"
+        return 0
+    fi
+
     (
         cd fly/activity-fly-http
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1

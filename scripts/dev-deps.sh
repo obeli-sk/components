@@ -14,6 +14,7 @@ cargo-nextest --version | head -n 1 >> dev-deps.txt
 just --version >> dev-deps.txt
 obelisk --version >> dev-deps.txt
 echo "pkg-config $(pkg-config --version)" >> dev-deps.txt
+python3 --version >> dev-deps.txt
 rustc --version >> dev-deps.txt
 wasm-tools --version >> dev-deps.txt
 wasmtime --version >> dev-deps.txt
