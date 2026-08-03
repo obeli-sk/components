@@ -102,6 +102,7 @@ class MockHTTPHandler(BaseHTTPRequestHandler):
             
             if parsed_path.path == "/empty":
                 self.send_response(204)
+                self.send_header('Content-Length', '0')
                 self.send_header('Connection', 'close')
                 self.end_headers()
                 return
