@@ -2,4 +2,3 @@ target/
 .direnv
 .envrc
 fly.toml
-target-sandbox/
