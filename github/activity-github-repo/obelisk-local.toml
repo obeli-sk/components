@@ -1,0 +1,71 @@
+# Reusable GitHub repo write activities: create a branch, commit files onto it
+# (one file per commit, chained via the returned OID), and open a PR. Each is a
+# standalone JS activity so a workflow can drive a durable commit chain. The
+# GITHUB_TOKEN secret is exposed as an outbound HTTP secret and injected only
+# into approved GitHub request headers.
+
+[[activity_js]]
+name = "github_create_branch"
+ffqn = "obelisk-components:github/repo.create-branch"
+params = [
+  { name = "owner",       type = "string" },
+  { name = "repo",        type = "string" },
+  { name = "base-branch", type = "string" },
+  { name = "new-branch",  type = "string" },
+]
+return_type = "result<string, string>"
+location = "create-branch.js"
+exec.lock_expiry.seconds = 30
+[[activity_js.allowed_host]]
+pattern = "https://api.github.com"
+methods = ["GET", "POST"]
+request_url_regex = "^(POST https://api\\.github\\.com/repos/[^/]+/[^/]+/git/refs|GET https://api\\.github\\.com/repos/[^/]+/[^/]+/git/ref/heads/[^/]+)$"
+secrets = ["GITHUB_TOKEN"]
+replace_in = ["headers"]
+
+
+[[activity_js]]
+name = "github_push_file"
+ffqn = "obelisk-components:github/repo.push-file"
+params = [
+  { name = "owner",             type = "string" },
+  { name = "repo",              type = "string" },
+  { name = "branch",            type = "string" },
+  { name = "expected-head-oid", type = "string" },
+  { name = "path",              type = "string" },
+  { name = "content",           type = "string" },
+  { name = "headline",          type = "string" },
+  { name = "body",              type = "string" },
+]
+return_type = "result<string, string>"
+location = "push-file.js"
+exec.lock_expiry.seconds = 60
+max_retries = 0
+[[activity_js.allowed_host]]
+pattern = "https://api.github.com"
+methods = ["POST"]
+request_url_regex = "^POST https://api\\.github\\.com/graphql$"
+secrets = ["GITHUB_TOKEN"]
+replace_in = ["headers"]
+
+
+[[activity_js]]
+name = "github_create_pr"
+ffqn = "obelisk-components:github/repo.create-pr"
+params = [
+  { name = "owner",        type = "string" },
+  { name = "repo",         type = "string" },
+  { name = "head-branch",  type = "string" },
+  { name = "base-branch",  type = "string" },
+  { name = "title",        type = "string" },
+  { name = "body",         type = "string" },
+]
+return_type = "result<string, string>"
+location = "create-pr.js"
+exec.lock_expiry.seconds = 60
+[[activity_js.allowed_host]]
+pattern = "https://api.github.com"
+methods = ["GET", "POST"]
+request_url_regex = "^(GET|POST) https://api\\.github\\.com/repos/[^/]+/[^/]+/pulls$"
+secrets = ["GITHUB_TOKEN"]
+replace_in = ["headers"]

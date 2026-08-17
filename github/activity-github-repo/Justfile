@@ -1,0 +1,8 @@
+build:
+	@echo "no build step for JS activities"
+verify-local:
+	obelisk deployment verify --server-config server.toml --allow-unavailable-runtime-config --deployment obelisk-local.toml
+verify-oci:
+	obelisk deployment verify --server-config server.toml --allow-unavailable-runtime-config --deployment obelisk-oci.toml
+push tag:
+	(../../scripts/push-components.sh {{ tag }})
