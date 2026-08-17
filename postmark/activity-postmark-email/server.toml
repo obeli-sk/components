@@ -1,8 +1,0 @@
-[secrets]
-POSTMARK_SERVER_TOKEN = { env = "POSTMARK_SERVER_TOKEN" }
-
-[[outbound_http.allowed_host]]
-pattern = "${POSTMARK_API_DOMAIN:-api.postmarkapp.com}"
-methods = ["POST"]
-secrets = ["POSTMARK_SERVER_TOKEN"]
-replace_in = ["headers"]

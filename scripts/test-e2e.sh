@@ -5,7 +5,7 @@
 #
 # Usage: ./scripts/test-e2e.sh [component-name]
 #   component-name: Optional. Run tests for specific component only.
-#                   e.g., openai, sendgrid, postmark, http, github, fly
+#                   e.g., openai, http, github, fly
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -15,8 +15,6 @@ export PATH="$HOME/.wasmtime/bin:$PATH"
 
 # Configuration
 MOCK_OPENAI_PORT=18080
-MOCK_SENDGRID_PORT=18081
-MOCK_POSTMARK_PORT=18082
 MOCK_HTTP_PORT=18083
 
 # PIDs of mock servers
@@ -64,32 +62,6 @@ run_openai_tests() {
 
     (
         cd openai/activity-openai-responses
-        cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
-    )
-}
-
-run_sendgrid_tests() {
-    echo "=== Running SendGrid e2e tests ==="
-    start_mock_server "SendGrid" "./scripts/mocks/mock-sendgrid-server.py" "$MOCK_SENDGRID_PORT"
-
-    export TEST_SENDGRID_API_KEY="mock-api-key-for-testing"
-    export TEST_SENDGRID_API_URL="http://127.0.0.1:$MOCK_SENDGRID_PORT/v3/mail/send"
-
-    (
-        cd sendgrid/activity-sendgrid-email
-        cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
-    )
-}
-
-run_postmark_tests() {
-    echo "=== Running Postmark e2e tests ==="
-    start_mock_server "Postmark" "./scripts/mocks/mock-postmark-server.py" "$MOCK_POSTMARK_PORT"
-
-    export TEST_POSTMARK_SERVER_TOKEN="mock-server-token-for-testing"
-    export TEST_POSTMARK_API_URL="http://127.0.0.1:$MOCK_POSTMARK_PORT/email"
-
-    (
-        cd postmark/activity-postmark-email
         cargo test --target wasm32-wasip2 -- --ignored --nocapture 2>&1
     )
 }
@@ -149,12 +121,6 @@ case "$COMPONENT" in
     openai)
         run_openai_tests
         ;;
-    sendgrid)
-        run_sendgrid_tests
-        ;;
-    postmark)
-        run_postmark_tests
-        ;;
     http)
         run_http_tests
         ;;
@@ -166,15 +132,13 @@ case "$COMPONENT" in
         ;;
     all)
         run_openai_tests
-        run_sendgrid_tests
-        run_postmark_tests
         run_http_tests
         run_github_tests
         run_fly_tests
         ;;
     *)
         echo "Unknown component: $COMPONENT"
-        echo "Valid options: openai, sendgrid, postmark, http, github, fly, all"
+        echo "Valid options: openai, http, github, fly, all"
         exit 1
         ;;
 esac

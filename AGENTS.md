@@ -357,8 +357,6 @@ E2E tests verify the components work correctly against real (or mock) APIs.
 
 # Run specific component tests
 ./scripts/test-e2e.sh openai    # Uses mock server
-./scripts/test-e2e.sh sendgrid  # Uses mock server  
-./scripts/test-e2e.sh postmark  # Uses mock server
 ./scripts/test-e2e.sh http      # Uses mock server
 ./scripts/test-e2e.sh github    # Uses real API (requires TEST_GITHUB_TOKEN)
 ./scripts/test-e2e.sh fly       # Uses real API (requires TEST_FLY_API_TOKEN)
@@ -369,8 +367,6 @@ E2E tests verify the components work correctly against real (or mock) APIs.
 Mock servers are provided in `scripts/mocks/` for testing without real API credentials:
 
 - `mock-openai-server.py` - Mocks OpenAI Responses API
-- `mock-sendgrid-server.py` - Mocks SendGrid Mail Send API
-- `mock-postmark-server.py` - Mocks Postmark Email API
 - `mock-http-server.py` - Generic HTTP echo server
 
 ### Environment Variables for E2E Tests
@@ -390,5 +386,3 @@ Mock servers are provided in `scripts/mocks/` for testing without real API crede
 Components support configurable API base URLs for testing:
 
 - `OPENAI_API_BASE_URL` - Override OpenAI API endpoint
-- `SENDGRID_API_URL` - Override SendGrid API endpoint
-- `POSTMARK_API_URL` - Override Postmark API endpoint

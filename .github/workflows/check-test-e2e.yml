@@ -45,12 +45,6 @@ jobs:
       - name: Run OpenAI e2e tests
         run: nix develop --command ./scripts/test-e2e.sh openai
 
-      - name: Run SendGrid e2e tests
-        run: nix develop --command ./scripts/test-e2e.sh sendgrid
-
-      - name: Run Postmark e2e tests
-        run: nix develop --command ./scripts/test-e2e.sh postmark
-
       - name: Run HTTP e2e tests
         run: nix develop --command ./scripts/test-e2e.sh http
 

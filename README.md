@@ -20,8 +20,6 @@ Activities are components that perform side effects (HTTP calls, database operat
 | [activity-http-generic](http/activity-http-generic) | Generic HTTP client |
 | [activity-obelisk-client-http](obelisk/activity-obelisk-client-http) | Obelisk API client |
 | [activity-openai-responses](openai/activity-openai-responses) | OpenAI Responses API |
-| [activity-postmark-email](postmark/activity-postmark-email) | Postmark email API |
-| [activity-sendgrid-email](sendgrid/activity-sendgrid-email) | SendGrid email API |
 
 ### Webhooks
 

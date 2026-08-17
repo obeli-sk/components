@@ -1,5 +1,0 @@
-package any:any;
-
-world any {
-    export obelisk-components:postmark-email/email@0.1.0;
-}

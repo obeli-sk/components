@@ -1,8 +1,0 @@
-[secrets]
-SENDGRID_API_KEY = { env = "SENDGRID_API_KEY" }
-
-[[outbound_http.allowed_host]]
-pattern = "${SENDGRID_API_DOMAIN:-api.sendgrid.com}"
-methods = ["POST"]
-secrets = ["SENDGRID_API_KEY"]
-replace_in = ["headers"]
