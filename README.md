@@ -14,6 +14,7 @@ Activities are components that perform side effects (HTTP calls, database operat
 |-----------|-------------|
 | [activity-docker](docker/activity-docker) | Docker container management using exec activities |
 | [activity-fly-http](fly/activity-fly-http) | Fly.io API (apps, machines, secrets, volumes) |
+| [activity-playwright](browser/activity-playwright) | Headless/headed Chromium via Playwright (start, eval page JS, cleanup) |
 | [activity-github-graphql](github/activity-github-graphql) | GitHub GraphQL API (account info, stargazers) |
 | [activity-github-repo](github/activity-github-repo) | GitHub repo write ops (branch, commit-on-branch, PR) |
 | [activity-http-generic](http/activity-http-generic) | Generic HTTP client |

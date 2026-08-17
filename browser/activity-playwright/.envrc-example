@@ -1,0 +1,7 @@
+use flake .
+
+# Run Chromium headed under Xvfb and expose VNC (default: headless).
+export HEADED="false"
+
+# Set to "true" only for a trusted server with a self-signed certificate.
+export IGNORE_HTTPS_ERRORS="false"

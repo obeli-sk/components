@@ -1,0 +1,59 @@
+# Browser automation via Playwright, using activity_exec — no WASM compilation.
+# Requires `docker`, `jq`, and `socat` to be available in PATH on the host, and
+# the `docker.io/getobelisk/components-playwright` image (built from playwright/,
+# see the Justfile) to be pullable.
+#
+# Lifecycle: `browser.start` launches a Docker container that opens a Chromium
+# page at `url` and listens on a Unix socket; `browser.eval` sends JavaScript to
+# run in that live page and returns its result; `browser.cleanup` removes the
+# container and socket. Run cleanup from the workflow's `finally`.
+#
+# `browser.eval` supports optional secret injection: declare `secrets = ["name"]`
+# on this activity and Obelisk writes `{ "secrets": { "name": "..." } }` to the
+# script's stdin; the page code can then read `secrets.name`. The secret value
+# never appears in params, argv, or the execution result.
+
+[[activity_exec]]
+name = "activity_playwright_browser_start"
+ffqn = "obelisk-browser:activity-playwright/browser.start"
+location = "scripts/start.sh"
+exec.lock_expiry.seconds = 45
+max_retries = 3
+env_vars = [
+    "PATH",
+    { key = "HEADED", value = "${HEADED:-}" },
+    { key = "IGNORE_HTTPS_ERRORS", value = "${IGNORE_HTTPS_ERRORS:-}" },
+]
+params = [
+    { name = "container-name", type = "string" },
+    { name = "socket", type = "string" },
+    { name = "url", type = "string" },
+]
+return_type = "result<record { container: string, image: string, socket: string, id: string, vncport: option<u16> }, string>"
+
+[[activity_exec]]
+name = "activity_playwright_browser_eval"
+ffqn = "obelisk-browser:activity-playwright/browser.eval"
+location = "scripts/eval.sh"
+exec.lock_expiry.seconds = 45
+max_retries = 2
+env_vars = ["PATH"]
+params = [
+    { name = "socket", type = "string" },
+    { name = "code", type = "string" },
+]
+return_type = "result<string, string>"
+max_output_bytes = 65536
+
+[[activity_exec]]
+name = "activity_playwright_browser_cleanup"
+ffqn = "obelisk-browser:activity-playwright/browser.cleanup"
+location = "scripts/cleanup.sh"
+exec.lock_expiry.seconds = 30
+max_retries = 3
+env_vars = ["PATH"]
+params = [
+    { name = "container-name", type = "string" },
+    { name = "socket", type = "string" },
+]
+return_type = "result<_, string>"

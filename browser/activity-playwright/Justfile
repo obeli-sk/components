@@ -1,0 +1,36 @@
+image := "docker.io/getobelisk/components-playwright:latest"
+
+# activity_exec components need no WASM build.
+build:
+
+# Build the Playwright container image the start activity launches.
+build-image:
+	docker build -t {{image}} playwright
+
+push-image:
+	docker push {{image}}
+
+verify-local:
+	obelisk deployment verify --allow-unavailable-runtime-config --deployment obelisk-local.toml
+
+verify-oci:
+	obelisk deployment verify --allow-unavailable-runtime-config --deployment obelisk-oci.toml
+
+push tag:
+	(../../scripts/push-components.sh {{ tag }})
+
+serve:
+	obelisk server run --deployment obelisk-local.toml
+
+# Convenience recipes for driving the browser by hand.
+start name socket url:
+	obelisk execution submit --follow obelisk-browser:activity-playwright/browser.start -- \
+	  '"{{name}}"' '"{{socket}}"' '"{{url}}"'
+
+poke socket code:
+	obelisk execution submit --follow obelisk-browser:activity-playwright/browser.eval -- \
+	  '"{{socket}}"' "$(jq -cn --arg value "{{code}}" '$value')"
+
+cleanup name socket:
+	obelisk execution submit --follow obelisk-browser:activity-playwright/browser.cleanup -- \
+	  '"{{name}}"' '"{{socket}}"'
