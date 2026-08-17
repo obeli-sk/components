@@ -74,7 +74,7 @@ jobs:
 
       - name: Run GitHub e2e tests
         env:
-          TEST_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
           TEST_GITHUB_LOGIN: obeli-sk
           TEST_GITHUB_REPO: https://github.com/obeli-sk/components
         run: nix develop --command ./scripts/test-e2e.sh github
