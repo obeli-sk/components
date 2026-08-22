@@ -10,9 +10,6 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Ensure wasmtime is in PATH
-export PATH="$HOME/.wasmtime/bin:$PATH"
-
 # Configuration
 MOCK_OPENAI_PORT=18080
 MOCK_HTTP_PORT=18083
