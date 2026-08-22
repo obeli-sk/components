@@ -3,7 +3,7 @@ cargo-expand 1.0.124
 cargo-insta 1.48.0
 cargo-nextest 0.9.143
 just 1.58.0
-obelisk 0.41.3
+obelisk 0.41.4
 pkg-config 0.29.2
 Python 3.14.7
 rustc 1.97.1 (8bab26f4f 2026-07-14)
