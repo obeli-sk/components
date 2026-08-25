@@ -25,5 +25,4 @@ insta.workspace = true
 
 [build-dependencies]
 anyhow.workspace = true
-regex.workspace = true
 wit-bindgen-rust.workspace = true
