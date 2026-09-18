@@ -1,0 +1,7 @@
+[public_env]
+allowed = ["HEADED", "IGNORE_HTTPS_ERRORS", "PATH"]
+
+[allowed_exec_activities]
+activity_playwright_browser_start = "sha256:f47c7aa66adcfc35c15ab5c6be1f69168296a85e47ec290d9a3452b9df2947b6"
+activity_playwright_browser_eval = "sha256:3c26a8be0378aa80faf7b4065dbc6dad8f914464cb3a6b5aec9dd1335beb0ebb"
+activity_playwright_browser_cleanup = "sha256:457c08209bc72f8166160e6855304aa5caf59986eec067b22b06c1461400f6cb"

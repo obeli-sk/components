@@ -9,7 +9,7 @@
       };
     };
     obelisk = {
-      url = "github:obeli-sk/obelisk/latest";
+      url = "github:obeli-sk/obelisk/latest-rc";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -32,6 +32,7 @@
               cargo-insta
               cargo-nextest
               flyctl
+              gh
               just
               jq
               pkg-config
@@ -39,6 +40,7 @@
               rustToolchain
               wasm-tools
               wasmtime.out
+              yq-go
             ];
           withObelisk = commonDeps ++ [ obelisk.packages.${system}.default ];
 
