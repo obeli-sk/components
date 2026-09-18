@@ -1,0 +1,118 @@
+name: fix PR component manifests
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: fix-pr-components-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash -euo pipefail {0}
+
+jobs:
+  publish:
+    if: github.event.issue.pull_request != null
+    runs-on: ubuntu-24.04
+    # No publishing environment exists today. Docker credentials are exposed to
+    # the checked-out same-repository PR after a collaborator permission check.
+    steps:
+      - name: Authorize command and capture PR head
+        id: authorize
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.event.comment.user.login }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if [ "$(jq -r '.comment.body | gsub("^\\s+|\\s+$"; "")' "$GITHUB_EVENT_PATH")" != "/fix" ]; then
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          permission=$(gh api "repos/$REPO/collaborators/$ACTOR/permission" --jq .permission)
+          case "$permission" in
+            write|maintain|admin) ;;
+            *) echo "::$ACTOR does not have permission to publish components" >&2; exit 1 ;;
+          esac
+
+          pr=$(gh api "repos/$REPO/pulls/$PR_NUMBER")
+          test "$(jq -r .state <<<"$pr")" = "open"
+          test "$(jq -r .head.repo.full_name <<<"$pr")" = "$REPO" || {
+            echo "Fork pull requests cannot publish components" >&2
+            exit 1
+          }
+
+          {
+            echo "eligible=true"
+            echo "head_ref=$(jq -r .head.ref <<<"$pr")"
+            echo "head_sha=$(jq -r .head.sha <<<"$pr")"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+        if: steps.authorize.outputs.eligible == 'true'
+        with:
+          ref: ${{ steps.authorize.outputs.head_sha }}
+          fetch-depth: 0
+
+      - uses: nixbuild/nix-quick-install-action@v34
+        if: steps.authorize.outputs.eligible == 'true'
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_conf: |
+            extra-substituters = https://obeli-sk.cachix.org
+            extra-trusted-public-keys = obeli-sk.cachix.org-1:31iM9GWSEhAXvvuTWQ7CvAcwvgRzsuJ9yJghywSd3Jw=
+
+      - name: Populate the Nix store
+        if: steps.authorize.outputs.eligible == 'true'
+        run: nix develop --command echo
+
+      - name: Log in to Docker Hub
+        if: steps.authorize.outputs.eligible == 'true'
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: echo "$DOCKER_HUB_TOKEN" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+
+      - name: Build and publish components
+        if: steps.authorize.outputs.eligible == 'true'
+        env:
+          TAG: sha-${{ steps.authorize.outputs.head_sha }}
+        run: nix develop --command just all-build all-push "$TAG"
+
+      - name: Commit manifests to the unchanged PR head
+        if: steps.authorize.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          HEAD_REF: ${{ steps.authorize.outputs.head_ref }}
+          HEAD_SHA: ${{ steps.authorize.outputs.head_sha }}
+        run: |
+          remote_sha=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq .head.sha)
+          test "$remote_sha" = "$HEAD_SHA" || {
+            echo "PR head moved from $HEAD_SHA to $remote_sha; refusing to commit stale manifests" >&2
+            exit 1
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- ':(glob)**/obelisk-oci.toml'
+          git commit -m "ci: publish components for ${HEAD_SHA}"
+          git push --force-with-lease="refs/heads/$HEAD_REF:$HEAD_SHA" \
+            origin "HEAD:refs/heads/$HEAD_REF"
+
+      - name: Report outcome
+        if: always() && steps.authorize.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          RESULT: ${{ job.status }}
+          HEAD_SHA: ${{ steps.authorize.outputs.head_sha }}
+        run: gh pr comment "$PR_NUMBER" --body "\`/fix\` ${RESULT} for \`${HEAD_SHA}\`."
