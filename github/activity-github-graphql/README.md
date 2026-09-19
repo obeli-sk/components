@@ -6,7 +6,8 @@ The `account` interface fetches basic info like repositories, contributions etc.
 
 ## Prerequisites
 [Classic GitHub token](https://github.com/settings/tokens/) with `read:org` permission is required.
-The token must be accesible as `GITHUB_TOKEN` environment variable.
+Register it as the `GITHUB_TOKEN` server secret. The deployment gives the component an opaque
+environment-variable placeholder, which Obelisk replaces only in approved outbound request headers.
 ```sh
 export GITHUB_TOKEN="..."
 ```
