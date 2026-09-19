@@ -19,8 +19,9 @@ Each returns `result<string, string>`.
 ## Prerequisites
 
 A GitHub token with write access to the target repository (fine-grained token with
-`contents` and `pull_requests` write, or a classic token with `repo` scope). The
-token must be available as the `GITHUB_TOKEN` environment variable.
+`contents` and `pull_requests` write, or a classic token with `repo` scope). Register it as the
+`GITHUB_TOKEN` server secret. The deployment gives each activity an opaque environment-variable
+placeholder, which Obelisk replaces only in approved outbound request headers.
 
 ```sh
 export GITHUB_TOKEN="..."

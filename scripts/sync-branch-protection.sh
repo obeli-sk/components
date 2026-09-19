@@ -14,7 +14,9 @@ def cartesian(m):
       [ .[] as $acc | $e.value[] | ($acc + {($e.key): .}) ])
     end;
 
-to_entries[] | . as $job
+to_entries[]
+| select(((.value.if // "") | contains("github.event_name == '"'"'push'"'"'")) | not)
+| . as $job
 | ($job.value.name // $job.key) as $tmpl
 | ($job.value.strategy.matrix // {} | with_entries(select(.key != "include" and .key != "exclude"))) as $matrix
 | cartesian($matrix)[] as $combo

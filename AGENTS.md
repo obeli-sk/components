@@ -303,10 +303,20 @@ webui.listening_addr = "127.0.0.1:8080"
 name = "activity_your_name"
 location = "target/wasm32-wasip2/release_activity/activity_your_name.wasm"
 exec.lock_expiry.seconds = 5
-env_vars = ["YOUR_API_KEY"]
 forward_stdout = "stderr"
 forward_stderr = "stderr"
+
+[[activity_wasm.allowed_host]]
+pattern = "https://api.example.com"
+methods = ["POST"]
+secrets = ["YOUR_API_KEY"]
+replace_in = ["headers"]
 ```
+
+API credentials used only in approved outbound requests must be registered in the server's
+`[secrets]` table and passed as opaque outbound placeholders, as above. Never put credentials in
+`env_vars` or `[public_env]`. Use `exposed_secrets` plus generated digest-bound `exposed_to` grants
+only when component code genuinely requires the plaintext value.
 
 Run locally with (`just build` builds into the component-local `target/` that
 `obelisk-local.toml` points at):

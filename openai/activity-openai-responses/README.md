@@ -14,8 +14,9 @@ It implements the [`api` WIT interface](wit/obelisk-components_openai-responses/
 
 ## Prerequisites
 
-An [OpenAI API key](https://platform.openai.com/api-keys) is required.
-The key must be accessible as the `OPENAI_API_KEY` environment variable.
+An [OpenAI API key](https://platform.openai.com/api-keys) is required. Register it as the
+`OPENAI_API_KEY` server secret. The deployment gives the component an opaque environment-variable
+placeholder, which Obelisk replaces only in approved outbound request headers.
 
 ```sh
 export OPENAI_API_KEY="sk-..."
