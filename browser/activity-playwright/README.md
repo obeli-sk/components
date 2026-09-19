@@ -61,7 +61,7 @@ execution result, declare a secret on the `eval` activity in your deployment:
 ```toml
 [[activity_exec]]
 ffqn = "obelisk-browser:activity-playwright/browser.eval"
-secrets = ["token"]
+exposed_secrets = ["token"]
 # ...
 ```
 
@@ -71,6 +71,13 @@ the page code can read `secrets.token`:
 ```js
 await page.locator('#token').fill(secrets.token);
 return await page.title();
+```
+
+Register the secret in the operator-owned `server.toml`, then copy the generated
+activity grant and secret exposure grant from:
+
+```sh
+obelisk generate secret-config-digest --deployment obelisk-local.toml
 ```
 
 ## Headed mode / VNC

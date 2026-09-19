@@ -8,7 +8,7 @@
 # run in that live page and returns its result; `browser.cleanup` removes the
 # container and socket. Run cleanup from the workflow's `finally`.
 #
-# `browser.eval` supports optional secret injection: declare `secrets = ["name"]`
+# `browser.eval` supports optional secret injection: declare `exposed_secrets = ["name"]`
 # on this activity and Obelisk writes `{ "secrets": { "name": "..." } }` to the
 # script's stdin; the page code can then read `secrets.name`. The secret value
 # never appears in params, argv, or the execution result.

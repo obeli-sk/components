@@ -1,6 +1,9 @@
 [secrets]
 OPENAI_API_KEY = { env = "OPENAI_API_KEY" }
 
+[public_env]
+allowed = ["OPENAI_API_BASE_URL", "OPENAI_API_DOMAIN"]
+
 [[outbound_http.allowed_host]]
 pattern = "${OPENAI_API_DOMAIN:-api.openai.com}"
 methods = ["POST", "GET", "DELETE"]

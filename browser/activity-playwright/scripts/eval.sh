@@ -22,7 +22,7 @@ jq -e 'type == "string"' >/dev/null <<<"$code_json" \
   || fail_permanent "invalid JSON argument for code"
 
 # Secrets are optional: Obelisk writes a `{ "secrets": { ... } }` document to
-# stdin only when the activity declares `secrets = [...]`. Default to an empty
+# stdin only when the activity declares `exposed_secrets = [...]`. Default to an empty
 # map when stdin is absent so callers that need no secrets work unchanged.
 stdin_json=$(</dev/stdin || true)
 if [ -z "${stdin_json//[[:space:]]/}" ]; then
